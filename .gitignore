@@ -1,0 +1,6 @@
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+dev_notebooks/
+__pycache__/
+*.pyc

@@ -1,0 +1,73 @@
+# Common test suite document for an application
+
+application_name: qcrboxtools
+application_version: "0.0.5"
+test_cases:
+  - name: "iso2aniso epoxide"
+    description: "Test the iso2aniso command"
+    command_name: iso2aniso
+
+    manual_precondition:
+      - qcrboxtools container needs to be built and available
+    input_parameters:
+      - name: input_cif
+        type: external_file
+        value: "./test_cif_files/epoxide_isotropic.cif"
+      - name: output_cif_name
+        type: str
+        value: "epoxide_anisotropic.cif"
+
+    expected_results:
+      - result_type: status
+        expected: successful
+      - result_type: cif_loop_value
+        cif_entry_name: "_atom_site.adp_type"
+        row_lookup_name: "_atom_site.label"
+        row_lookup_value: "O1"
+        expected_value: "Uani"
+      - result_type: cif_loop_value
+        cif_entry_name: "_atom_site.adp_type"
+        row_lookup_name: "_atom_site.label"
+        row_lookup_value: "H2a"
+        expected_value: "Uiso"
+      - result_type: cif_loop_value
+        cif_entry_name: "_atom_site_aniso.u_11"
+        row_lookup_name: "_atom_site_aniso.label"
+        row_lookup_value: "C2"
+        expected_value: 0.02803
+        allowed_deviation: 0.0001
+
+  - name: "replace_structure_from_cif"
+    description: "Test the replace_structure_from_cif command"
+    command_name: replace_structure_from_cif
+
+    manual_precondition:
+      - qcrboxtools container needs to be built and available
+    input_parameters:
+      - name: input_cif
+        type: external_file
+        value: "./test_cif_files/epoxide_isotropic.cif"
+      - name: structure_cif
+        type: internal_file
+        value: |
+          data_new_structure
+          _cell_length_a    10.0
+          _cell_length_b    10.0
+          _cell_length_c    10.0
+          _cell_angle_alpha 90.0
+          _cell_angle_beta  90.0
+          _cell_angle_gamma 90.0
+          loop_
+          _atom_site_label
+          _atom_site_type_symbol
+          _atom_site_fract_x
+          _atom_site_fract_y
+          _atom_site_fract_z
+          O123   O   0.250  0.250  0.250
+      - name: output_cif_name
+        type: str
+        value: "epoxide_replaced.cif"
+
+    expected_results:
+      - result_type: status
+        expected: successful
