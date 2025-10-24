@@ -4,3 +4,9 @@
 dev_notebooks/
 __pycache__/
 *.pyc
+.coverage
+htmlcov/
+.vscode/
+.ruff_cache/
+.pytest_cache/
+.ipynb_checkpoints/

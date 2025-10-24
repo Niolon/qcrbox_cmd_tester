@@ -21,6 +21,15 @@ qcrbox_cmd_tester = { path = ".", editable = true }
 
 [tool.pixi.tasks]
 
+[tool.pixi.feature.devtools.tasks]
+lint = "ruff check src/ tests/"
+format = "ruff format src/ tests/"
+pre-commit-run = "pre-commit run --all-files"
+
+[tool.pixi.feature.test.tasks]
+test = "pytest tests/"
+test-cov = "pytest tests/ --cov=src/qcrbox_cmd_tester --cov-report=term-missing"
+
 [tool.pixi.dependencies]
 pyyaml = ">=6.0.3,<7"
 pydantic = ">=2.12.2,<3"
@@ -28,10 +37,56 @@ pycifrw = ">=4.4.6,<5"
 
 [tool.pixi.feature.test.dependencies]
 pytest = "*"
+pytest-cov = ">=7.0.0,<8"
 
 [tool.pixi.feature.devtools.dependencies]
 jupyterlab = "*"
 ruff = ">=0.14.1,<0.15"
+pre-commit = "*"
 
 [tool.pixi.environments]
 dev = { features = ["test", "devtools"], solve-group = "default" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/.pixi/*",
+    "*/dev_notebooks/*",
+    "*/qcrbox_client.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
