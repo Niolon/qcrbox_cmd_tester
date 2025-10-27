@@ -9,6 +9,8 @@ from dataclasses import dataclass
 
 from qcrboxapiclient.client import Client
 
+from qcrbox_cmd_tester.models.expected_values import StatusExpectedResult
+
 from .models import TestCase, TestSuite
 from .qcrbox_client import run_qcrbox_command
 from .test_implementations import IndividualTestResult, check_result
@@ -21,6 +23,8 @@ class TestCaseResult:
     test_case_name: str
     all_passed: bool
     individual_results: list[IndividualTestResult]
+    result_cif: str | None = None  # Store the CIF result for debugging
+    command_status: str | None = None  # Store command status
 
 
 @dataclass
@@ -55,6 +59,17 @@ def run_test_case(client: Client, test_case: TestCase) -> TestCaseResult:
     individual_results = []
     all_passed = True
     for expected_result in test_case.expected_results:
+        if isinstance(expected_result, StatusExpectedResult):
+            result = IndividualTestResult(
+                test_case_name=f"status_{expected_result.expected}",
+                passed=command_result.status == expected_result.expected,
+                log=None
+                if command_result.status == expected_result.expected
+                else f"Expected status '{expected_result.expected}', got '{command_result.status}'",
+            )
+            individual_results.append(result)
+            continue
+
         if command_result.status != "successful":
             individual_results.append(
                 IndividualTestResult(
@@ -74,7 +89,13 @@ def run_test_case(client: Client, test_case: TestCase) -> TestCaseResult:
         if not result.passed:
             all_passed = False
 
-    return TestCaseResult(test_case_name=test_case.name, all_passed=all_passed, individual_results=individual_results)
+    return TestCaseResult(
+        test_case_name=test_case.name,
+        all_passed=all_passed,
+        individual_results=individual_results,
+        result_cif=command_result.result_cif,
+        command_status=command_result.status,
+    )
 
 
 def run_test_suite(client: Client, test_suite: TestSuite) -> TestSuiteResult:

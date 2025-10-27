@@ -6,6 +6,7 @@ __pycache__/
 *.pyc
 .coverage
 htmlcov/
+logs/
 .vscode/
 .ruff_cache/
 .pytest_cache/

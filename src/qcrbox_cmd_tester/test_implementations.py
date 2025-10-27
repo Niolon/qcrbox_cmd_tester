@@ -17,7 +17,6 @@ from .models.expected_values import (
     CifLoopEntryPresentExpectedResult,
     CifLoopEntryWithinExpectedResult,
     ExpectedResultType,
-    StatusExpectedResult,
 )
 
 
@@ -63,16 +62,7 @@ def generate_test_case_name(test_type: str, entry_name: str | None = None) -> st
 # Individual Test Functions
 # ============================================================================
 
-
-def test_status(adapter: CIFIOAdapter, expected: StatusExpectedResult) -> IndividualTestResult:
-    """Test the execution status of a command."""
-    # Note: Status tests are not implemented for CIF validation
-    # They would need to be checked at a higher level (command execution)
-    return IndividualTestResult(
-        test_case_name=generate_test_case_name("status"),
-        passed=True,
-        log="Status test not implemented for CIF validation",
-    )
+# Status is not tested here since it does not require CIF parsing
 
 
 def test_cif_entry_match(adapter: CIFIOAdapter, expected: CifEntryMatchExpectedResult) -> IndividualTestResult:
@@ -474,7 +464,6 @@ def test_cif_loop_entry_present(
 # ============================================================================
 
 TEST_FUNCTION_MAP: dict[type, Callable[[CIFIOAdapter, Any], IndividualTestResult]] = {
-    StatusExpectedResult: test_status,
     CifEntryMatchExpectedResult: test_cif_entry_match,
     CifEntryNonMatchExpectedResult: test_cif_entry_non_match,
     CifEntryWithinExpectedResult: test_cif_entry_within,
@@ -488,6 +477,8 @@ TEST_FUNCTION_MAP: dict[type, Callable[[CIFIOAdapter, Any], IndividualTestResult
     CifLoopEntryMissingExpectedResult: test_cif_loop_entry_missing,
     CifLoopEntryPresentExpectedResult: test_cif_loop_entry_present,
 }
+# StatusExpectedResult is not tested here since its success/failure is determined
+# at a higher level (command execution) and does not require CIF parsing.
 
 
 # ============================================================================
