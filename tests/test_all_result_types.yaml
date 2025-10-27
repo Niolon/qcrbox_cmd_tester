@@ -33,7 +33,8 @@ test_cases:
           2 7 13 20 'another string' .
           2 6 18 22 'do not use this one' .
           3 7 19 23 'do not find this one either' ?
-                  
+        
+        upload_filename: "example_internal.cif"
       - name: string_parameter
         type: str
         value: "Example string 'parameter'"

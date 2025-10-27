@@ -3,14 +3,6 @@
 application_name: mopro
 application_version: "2024.10"
 
-# Note: For file parameters, you can optionally specify 'upload_filename' to control
-# the filename used when uploading to QCrBox. If not specified, defaults to "{parameter_name}.cif"
-# Example:
-#   - name: inp_file
-#     type: external_file
-#     value: "./path/to/file.inp"
-#     upload_filename: "custom_name.inp"  # Optional: specifies upload filename
-
 test_cases:
   - name: "run_inp_file_basic"
     description: "Test running MoPro with input files"
@@ -48,3 +40,18 @@ test_cases:
     expected_results:
       - result_type: status
         expected: successful
+      - result_type: cif_value
+        test_type: within
+        cif_entry_name: "_refine_ls.r_factor_all"
+        max_value: 0.014
+        min_value: 0.000
+      - result_type: cif_loop_value
+        test_type: within
+        row_lookup:
+          - row_entry_name: "_geom_bond.atom_site_label_1"
+            row_entry_value: "C9"
+          - row_entry_name: "_geom_bond.atom_site_label_2"
+            row_entry_value: "H9c"
+        cif_entry_name: "_geom_bond.distance"
+        expected_value: 1.01
+        allowed_deviation: 0.02
