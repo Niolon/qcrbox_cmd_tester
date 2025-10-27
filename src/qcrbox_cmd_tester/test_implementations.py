@@ -70,11 +70,16 @@ def test_cif_entry_match(adapter: CIFIOAdapter, expected: CifEntryMatchExpectedR
     try:
         actual_value = adapter.get_entry_from_cif_block(expected.cif_entry_name)
 
-        # Convert to comparable types
-        actual_str = str(actual_value).strip()
-        expected_str = str(expected.expected_value).strip()
-
-        passed = actual_str == expected_str
+        # Try numerical comparison first
+        try:
+            actual_float = float(actual_value)
+            expected_float = float(expected.expected_value)
+            passed = actual_float == expected_float
+        except (ValueError, TypeError):
+            # Fall back to string comparison
+            actual_str = str(actual_value).strip()
+            expected_str = str(expected.expected_value).strip()
+            passed = actual_str == expected_str
 
         if passed:
             log = f"✓ Entry '{expected.cif_entry_name}' matches expected value '{expected.expected_value}'"
@@ -99,11 +104,16 @@ def test_cif_entry_non_match(adapter: CIFIOAdapter, expected: CifEntryNonMatchEx
     try:
         actual_value = adapter.get_entry_from_cif_block(expected.cif_entry_name)
 
-        # Convert to comparable types
-        actual_str = str(actual_value).strip()
-        forbidden_str = str(expected.forbidden_value).strip()
-
-        passed = actual_str != forbidden_str
+        # Try numerical comparison first
+        try:
+            actual_float = float(actual_value)
+            forbidden_float = float(expected.forbidden_value)
+            passed = actual_float != forbidden_float
+        except (ValueError, TypeError):
+            # Fall back to string comparison
+            actual_str = str(actual_value).strip()
+            forbidden_str = str(expected.forbidden_value).strip()
+            passed = actual_str != forbidden_str
 
         if passed:
             log = f"✓ Entry '{expected.cif_entry_name}' does not match forbidden value '{expected.forbidden_value}'"
@@ -240,11 +250,16 @@ def test_cif_loop_entry_match(adapter: CIFIOAdapter, expected: CifLoopEntryMatch
 
         actual_value = adapter.get_loop_entry_from_cif_block(expected.cif_entry_name, row_lookups)
 
-        # Convert to comparable types
-        actual_str = str(actual_value).strip()
-        expected_str = str(expected.expected_value).strip()
-
-        passed = actual_str == expected_str
+        # Try numerical comparison first
+        try:
+            actual_float = float(actual_value)
+            expected_float = float(expected.expected_value)
+            passed = actual_float == expected_float
+        except (ValueError, TypeError):
+            # Fall back to string comparison
+            actual_str = str(actual_value).strip()
+            expected_str = str(expected.expected_value).strip()
+            passed = actual_str == expected_str
 
         # Build lookup description for log messages
         lookup_desc = " AND ".join(
@@ -279,11 +294,16 @@ def test_cif_loop_entry_non_match(
 
         actual_value = adapter.get_loop_entry_from_cif_block(expected.cif_entry_name, row_lookups)
 
-        # Convert to comparable types
-        actual_str = str(actual_value).strip()
-        forbidden_str = str(expected.forbidden_value).strip()
-
-        passed = actual_str != forbidden_str
+        # Try numerical comparison first
+        try:
+            actual_float = float(actual_value)
+            forbidden_float = float(expected.forbidden_value)
+            passed = actual_float != forbidden_float
+        except (ValueError, TypeError):
+            # Fall back to string comparison
+            actual_str = str(actual_value).strip()
+            forbidden_str = str(expected.forbidden_value).strip()
+            passed = actual_str != forbidden_str
 
         # Build lookup description for log messages
         lookup_desc = " AND ".join(

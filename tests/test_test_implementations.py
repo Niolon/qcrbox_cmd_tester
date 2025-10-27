@@ -71,6 +71,39 @@ def test_match_failure(sample_cif):
     assert "expected" in result.log.lower()
 
 
+def test_match_numerical_int(sample_cif):
+    """Test match with numerical value (int)."""
+    expected = CifEntryMatchExpectedResult(cif_entry_name="_cif.entry2", expected_value=1.234)
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is True
+    assert "match" in result.log.lower()
+
+
+def test_match_numerical_float_trailing_zeros(sample_cif):
+    """Test match with numerical value having different trailing zeros."""
+    expected = CifEntryMatchExpectedResult(cif_entry_name="_cif.entry2", expected_value=1.2340)
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is True
+
+
+def test_match_numerical_string_representation(sample_cif):
+    """Test match with numerical value as string."""
+    expected = CifEntryMatchExpectedResult(cif_entry_name="_cif.entry2", expected_value="1.234")
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is True
+
+
+def test_match_numerical_failure(sample_cif):
+    """Test failed match with different numerical value."""
+    expected = CifEntryMatchExpectedResult(cif_entry_name="_cif.entry2", expected_value=1.235)
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is False
+
+
 def test_non_match_success(sample_cif):
     """Test successful non-match verification."""
     expected = CifEntryNonMatchExpectedResult(cif_entry_name="_cif.entry1", forbidden_value="D")
@@ -188,6 +221,42 @@ def test_loop_match_failure(sample_cif):
     result = check_result(sample_cif, expected)
 
     assert result.passed is False
+
+
+def test_loop_match_numerical_int(sample_cif):
+    """Test loop entry match with numerical value as int."""
+    expected = CifLoopEntryMatchExpectedResult(
+        cif_entry_name="_loop_entry.value",
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
+        expected_value=12,
+    )
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is True
+
+
+def test_loop_match_numerical_float(sample_cif):
+    """Test loop entry match with numerical value as float."""
+    expected = CifLoopEntryMatchExpectedResult(
+        cif_entry_name="_loop_entry.value",
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
+        expected_value=12.0,
+    )
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is True
+
+
+def test_loop_match_numerical_string(sample_cif):
+    """Test loop entry match with numerical value as string."""
+    expected = CifLoopEntryMatchExpectedResult(
+        cif_entry_name="_loop_entry.value",
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
+        expected_value="12",
+    )
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is True
 
 
 def test_loop_present_undefined_allowed(sample_cif):
