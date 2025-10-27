@@ -2,6 +2,30 @@
 
 A command-line test suite runner for testing QCrBox API functionality.
 
+**QCrBox** is a platform for running crystallographic software in containerized environments. Learn more:
+- [QCrBox Documentation](https://qcrbox.github.io/QCrBox/)
+- [QCrBox Repository](https://github.com/QCrBox/QCrBox)
+
+## Quick Start
+
+```bash
+# Install
+pip install -e .
+
+# Run tests
+qcrbox-test --test-location qcrbox_tests/
+
+# Run a single test file
+qcrbox-test --test-location qcrbox_tests/olex2.yaml
+```
+
+## Documentation
+
+- **[Introduction](docs/index.md)** - Overview and key features
+- **[Installation Guide](docs/installation.md)** - Detailed installation instructions
+- **[YAML Format Reference](docs/yaml-format.md)** - Complete test specification format
+- **[Examples](qcrbox_tests/)** - Real-world test suite examples
+
 ## Installation
 
 ### Using pip/uv

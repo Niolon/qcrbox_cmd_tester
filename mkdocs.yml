@@ -28,8 +28,10 @@ theme:
     - content.code.copy
 
 nav:
-  - Home: README.md
+  - Home: docs/index.md
+  - Installation: docs/installation.md
   - YAML Format: docs/yaml-format.md
+  - README: README.md
 
 markdown_extensions:
   - admonition
