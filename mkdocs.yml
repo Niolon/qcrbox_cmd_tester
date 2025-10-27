@@ -4,6 +4,8 @@ site_author: Paul Niklas Ruth
 repo_url: https://github.com/Niolon/qcrbox_cmd_tester
 repo_name: Niolon/qcrbox_cmd_tester
 
+docs_dir: docs
+
 theme:
   name: material
   palette:
@@ -28,10 +30,9 @@ theme:
     - content.code.copy
 
 nav:
-  - Home: docs/index.md
-  - Installation: docs/installation.md
-  - YAML Format: docs/yaml-format.md
-  - README: README.md
+  - Home: index.md
+  - Installation: installation.md
+  - YAML Format: yaml-format.md
 
 markdown_extensions:
   - admonition

@@ -7,6 +7,7 @@ __pycache__/
 .coverage
 htmlcov/
 logs/
+site/
 .vscode/
 .ruff_cache/
 .pytest_cache/

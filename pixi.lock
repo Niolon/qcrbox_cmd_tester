@@ -2266,7 +2266,7 @@ packages:
 - pypi: ./
   name: qcrbox-cmd-tester
   version: 0.1.0
-  sha256: aea609e3aa09bbe7ca06bed7463bdb9f0bb0f4d0123be2785b2156c785987ab2
+  sha256: 7a4211ae88423e49774165095da1f64c557025ae402fc47b383247fd03109f20
   requires_dist:
   - pyyaml>=6.0.3
   - pydantic>=2.12.2
@@ -2278,6 +2278,8 @@ packages:
   - jupyterlab ; extra == 'dev'
   - ruff>=0.14.1 ; extra == 'dev'
   - pre-commit ; extra == 'dev'
+  - mkdocs>=1.5.0 ; extra == 'dev'
+  - mkdocs-material>=9.0.0 ; extra == 'dev'
   requires_python: '>=3.11'
   editable: true
 - pypi: git+https://github.com/QCrBox/QCrBoxAPIClient?rev=0.1.0#5d5745b9165205fbe0c0c06e1d39d747d135db54

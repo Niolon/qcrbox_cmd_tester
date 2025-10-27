@@ -33,6 +33,8 @@ dev = [
     "jupyterlab",
     "ruff>=0.14.1",
     "pre-commit",
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.0.0",
 ]
 
 [project.scripts]

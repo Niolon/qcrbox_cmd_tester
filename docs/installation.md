@@ -14,9 +14,11 @@ This guide covers different ways to install QCrBox Command Tester depending on y
 
 ## Installation Methods
 
-### Method 1: Using pip (Recommended for Users)
+Choose the installation method that best fits your workflow.
 
-The simplest way to install QCrBox Command Tester:
+### Option 1: Using pip
+
+Standard installation using pip:
 
 ```bash
 # Install from the repository
@@ -39,9 +41,9 @@ cd qcrbox_cmd_tester
 pip install -e ".[dev]"
 ```
 
-### Method 2: Using uv (Fast Alternative)
+### Option 2: Using uv
 
-[uv](https://github.com/astral-sh/uv) is a fast Python package installer:
+Fast alternative using [uv](https://github.com/astral-sh/uv):
 
 ```bash
 # Install uv if you haven't already
@@ -56,9 +58,9 @@ cd qcrbox_cmd_tester
 uv pip install -e ".[dev]"
 ```
 
-### Method 3: Using pixi (Recommended for Contributors)
+### Option 3: Using pixi
 
-[Pixi](https://pixi.sh) is a package management tool that handles both conda and PyPI packages:
+For contributors, [Pixi](https://pixi.sh) manages both conda and PyPI packages:
 
 ```bash
 # Install pixi if you haven't already
@@ -78,9 +80,9 @@ pixi shell
 pixi run test
 ```
 
-### Method 4: From Source (Manual)
+### Option 4: From Source
 
-For complete control over the installation:
+Manual installation for complete control:
 
 ```bash
 # Clone the repository
@@ -230,28 +232,11 @@ pip install git+https://github.com/Niolon/qcrbox_cmd_tester.git
 If `qcrbox-test` is not found after installation:
 
 ```bash
-# Check if the script directory is in PATH
-python -m site --user-base
-
-# Add to PATH (Linux/macOS)
-export PATH="$PATH:$(python -m site --user-base)/bin"
-
-# Or use the module directly
+# Use the module directly
 python -m qcrbox_cmd_tester --help
-```
 
-### Import Errors
-
-If you get import errors:
-
-```bash
-# Ensure all dependencies are installed
-pip install --upgrade pip
-pip install -e .
-
-# Or reinstall
-pip uninstall qcrbox_cmd_tester
-pip install -e .
+# Or add the scripts directory to PATH
+export PATH="$PATH:$(python -m site --user-base)/bin"
 ```
 
 ### Python Version Issues
@@ -260,10 +245,6 @@ Ensure you're using Python 3.11+:
 
 ```bash
 python --version  # Should show 3.11.x or higher
-
-# If not, install a newer version or use pyenv
-pyenv install 3.11
-pyenv local 3.11
 ```
 
 ### QCrBox API Connection Issues
@@ -271,14 +252,14 @@ pyenv local 3.11
 If you can't connect to the QCrBox API:
 
 ```bash
-# Test the connection manually
-curl http://localhost:11000/health
+# Test the connection
+curl http://localhost:11000
 
-# Check QCrBox is running
+# Verify QCrBox container is running
 docker ps | grep qcrbox
-
-# Verify firewall settings aren't blocking the connection
 ```
+
+See the [QCrBox documentation](https://qcrbox.github.io/QCrBox/) for setup help.
 
 ## Updating
 
