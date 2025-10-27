@@ -45,8 +45,13 @@ test_cases:
         type: str
         value: "olex2_commands_output.cif"
       - name: cmd_file
-        type: external_file
-        value: "./test_cif_files/olex2_commands.txt"
+        type: internal_file
+        value: |
+          DelIns ACTA
+          AddIns ACTA
+          refine 5
+          refine 5
+        upload_filename: "olex2_commands.txt"
     
     expected_results:
       - result_type: status

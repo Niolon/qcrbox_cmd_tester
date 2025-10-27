@@ -68,6 +68,8 @@ def run_test_case(client: Client, test_case: TestCase) -> TestCaseResult:
                 else f"Expected status '{expected_result.expected}', got '{command_result.status}'",
             )
             individual_results.append(result)
+            if not result.passed:
+                all_passed = False
             continue
 
         if command_result.status != "successful":

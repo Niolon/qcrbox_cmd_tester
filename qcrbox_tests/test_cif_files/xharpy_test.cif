@@ -1,3 +1,0 @@
-# Placeholder CIF file for XHARPy-GPAW tests
-# This file should be replaced with actual test data
-data_placeholder

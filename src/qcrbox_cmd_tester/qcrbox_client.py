@@ -123,7 +123,7 @@ def run_qcrbox_command(
     if final_response.status == "successful":
         output_dataset_id = final_response.output_dataset_id
         if not output_dataset_id:
-            raise ValueError("No output dataset ID in successful response")
+            return CommandRunResult(status="failed", result_cif=None, status_events=final_response.status_events)
 
         dataset_bytes = download_dataset_by_id.sync(id=output_dataset_id, client=client)
         delete_dataset_by_id.sync(id=output_dataset_id, client=client)
