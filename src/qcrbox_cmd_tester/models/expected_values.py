@@ -230,6 +230,22 @@ class CifEntryPresentExpectedResult(BaseCifEntryExpectedResult):
 # ============================================================================
 
 
+class RowLookup(BaseModel):
+    """
+    Single row lookup criterion for CIF loop entries.
+
+    Used to identify specific rows in a CIF loop by matching column values.
+    Multiple RowLookup entries act as AND conditions.
+
+    Example:
+        RowLookup(row_entry_name="_loop_entry.index", row_entry_value=2)
+        matches rows where _loop_entry.index == 2
+    """
+
+    row_entry_name: str = Field(..., min_length=1)
+    row_entry_value: str | int | float | bool
+
+
 class BaseCifLoopEntryExpectedResult(BaseExpectedResult, ABC):
     """
     Base class for all CIF loop entry tests.
@@ -237,23 +253,29 @@ class BaseCifLoopEntryExpectedResult(BaseExpectedResult, ABC):
     Loop tests require identifying a specific row before testing a value.
     All subclasses share:
     - result_type: Always 'cif_loop_value'
-    - row_lookup_name: The loop column used to find the target row
-    - row_lookup_value: The value to match in the lookup column
+    - row_lookup: List of conditions to identify the target row (AND logic)
     - cif_entry_name: The loop column to test in the matched row
 
-    Example loop structure:
+    Example loop structure with single lookup:
         loop_
-        _loop_entry.index    <- row_lookup_name
+        _loop_entry.index    <- row_lookup condition
         _loop_entry.value    <- cif_entry_name (what we test)
-        1                    <- row_lookup_value (identifies this row)
+        1                    <- matches row_entry_value=1
         12                   <- the value we're testing
         2                    <- different row
         13                   <- different value
+
+    Example with multi-row lookup:
+        loop_
+        _loop_entry.index           <- first lookup condition
+        _loop_entry.index_additional <- second lookup condition
+        _loop_entry.value           <- cif_entry_name (what we test)
+        2  6  18                    <- matches index=2 AND index_additional=6
+        2  7  13                    <- different row (index_additional doesn't match)
     """
 
     result_type: Literal["cif_loop_value"] = "cif_loop_value"
-    row_lookup_name: str = Field(..., min_length=1)
-    row_lookup_value: str | int | float | bool
+    row_lookup: list[RowLookup] = Field(..., min_length=1)
     cif_entry_name: str = Field(..., min_length=1)
 
 
@@ -261,16 +283,28 @@ class CifLoopEntryMatchExpectedResult(BaseCifLoopEntryExpectedResult):
     """
     Tests that a specific loop entry exactly matches an expected value.
 
-    YAML example:
+    YAML example (single lookup):
         result_type: cif_loop_value
         test_type: match
         cif_entry_name: "_loop_entry.value"
-        row_lookup_name: "_loop_entry.index"
-        row_lookup_value: 1
+        row_lookup:
+          - row_entry_name: "_loop_entry.index"
+            row_entry_value: 1
         expected_value: 12
 
-    First finds the row where _loop_entry.index == 1,
-    then checks if _loop_entry.value == 12 in that row.
+    YAML example (multi-lookup):
+        result_type: cif_loop_value
+        test_type: match
+        cif_entry_name: "_loop_entry.value"
+        row_lookup:
+          - row_entry_name: "_loop_entry.index"
+            row_entry_value: 2
+          - row_entry_name: "_loop_entry.index_additional"
+            row_entry_value: 6
+        expected_value: 18
+
+    First finds the row where ALL lookup conditions match,
+    then checks if cif_entry_name has the expected value in that row.
     """
 
     test_type: Literal["match"] = "match"
@@ -285,11 +319,13 @@ class CifLoopEntryNonMatchExpectedResult(BaseCifLoopEntryExpectedResult):
         result_type: cif_loop_value
         test_type: non-match
         cif_entry_name: "_loop_entry.value"
-        row_lookup_name: "_loop_entry.index"
-        row_lookup_value: 1
+        row_lookup:
+          - row_entry_name: "_loop_entry.index"
+            row_entry_value: 1
         forbidden_value: 13
 
-    Negative assertion for loop values.
+    Negative assertion for loop values. First finds row matching all lookup
+    conditions, then verifies the value is NOT the forbidden value.
     """
 
     test_type: Literal["non-match"] = "non-match"
@@ -300,14 +336,15 @@ class CifLoopEntryWithinExpectedResult(BaseCifLoopEntryExpectedResult):
     """
     Tests that a numerical loop entry falls within an acceptable range.
 
-    Two YAML formats supported (same as CifEntryWithinExpectedResult):
+    Two YAML formats supported:
 
     Format 1 - Deviation:
         result_type: cif_loop_value
         test_type: within
         cif_entry_name: "_loop_entry.index"
-        row_lookup_name: "_loop_entry.value"
-        row_lookup_value: 2
+        row_lookup:
+          - row_entry_name: "_loop_entry.value"
+            row_entry_value: 2
         expected_value: 12
         allowed_deviation: 0.001
 
@@ -315,10 +352,13 @@ class CifLoopEntryWithinExpectedResult(BaseCifLoopEntryExpectedResult):
         result_type: cif_loop_value
         test_type: within
         cif_entry_name: "_loop_entry.index"
-        row_lookup_name: "_loop_entry.value"
-        row_lookup_value: 1
+        row_lookup:
+          - row_entry_name: "_loop_entry.value"
+            row_entry_value: 1
         max_value: 15
         min_value: 10
+
+    Supports multi-row lookup conditions as well.
     """
 
     test_type: Literal["within"] = "within"
@@ -343,8 +383,9 @@ class CifLoopEntryContainExpectedResult(BaseCifLoopEntryExpectedResult):
         result_type: cif_loop_value
         test_type: contain
         cif_entry_name: "_loop_entry.present_entry"
-        row_lookup_name: "_loop_entry.index"
-        row_lookup_value: 2
+        row_lookup:
+          - row_entry_name: "_loop_entry.index"
+            row_entry_value: 2
         expected_value: "another"
 
     Case-sensitive substring matching in loop values.
@@ -362,8 +403,9 @@ class CifLoopEntryMissingExpectedResult(BaseCifLoopEntryExpectedResult):
         result_type: cif_loop_value
         test_type: missing
         cif_entry_name: "_loop_entry.non_existent"
-        row_lookup_name: "_loop_entry.index"
-        row_lookup_value: 1
+        row_lookup:
+          - row_entry_name: "_loop_entry.index"
+            row_entry_value: 1
 
     Note: This tests if the column exists in the loop structure,
     not if a specific row exists. The row_lookup is still used to
@@ -382,16 +424,18 @@ class CifLoopEntryPresentExpectedResult(BaseCifLoopEntryExpectedResult):
         result_type: cif_loop_value
         test_type: present
         cif_entry_name: "_loop_entry.potentially_undefined"
-        row_lookup_name: "_loop_entry.index"
-        row_lookup_value: 1
+        row_lookup:
+          - row_entry_name: "_loop_entry.index"
+            row_entry_value: 1
         allow_unknown: false
 
         # Can be undefined (?)
         result_type: cif_loop_value
         test_type: present
         cif_entry_name: "_loop_entry.potentially_undefined"
-        row_lookup_name: "_loop_entry.index"
-        row_lookup_value: 1
+        row_lookup:
+          - row_entry_name: "_loop_entry.index"
+            row_entry_value: 1
         allow_unknown: true
 
     The allow_unknown flag handles CIF's ? markers.

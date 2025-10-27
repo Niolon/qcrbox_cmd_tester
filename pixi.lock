@@ -2266,7 +2266,7 @@ packages:
 - pypi: ./
   name: qcrbox-cmd-tester
   version: 0.1.0
-  sha256: 15a3e69d78e8dd090a5cef5a9835ad9766c7520a037a7163be4e95acc7ab62d4
+  sha256: 38ebc9cc924a135218e34ed9e7091d799d58850815d9dd5b860c19cfa7aeef57
   requires_dist:
   - qcrboxapiclient @ git+https://github.com/QCrBox/QCrBoxAPIClient@0.1.0
   requires_python: '>=3.11'

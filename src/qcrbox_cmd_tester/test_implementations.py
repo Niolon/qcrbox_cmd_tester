@@ -245,9 +245,10 @@ def test_cif_entry_present(adapter: CIFIOAdapter, expected: CifEntryPresentExpec
 def test_cif_loop_entry_match(adapter: CIFIOAdapter, expected: CifLoopEntryMatchExpectedResult) -> IndividualTestResult:
     """Test that a specific loop entry exactly matches an expected value."""
     try:
-        actual_value = adapter.get_loop_entry_from_cif_block(
-            expected.cif_entry_name, expected.row_lookup_name, str(expected.row_lookup_value)
-        )
+        # Convert RowLookup models to tuple list
+        row_lookups = [(lookup.row_entry_name, str(lookup.row_entry_value)) for lookup in expected.row_lookup]
+
+        actual_value = adapter.get_loop_entry_from_cif_block(expected.cif_entry_name, row_lookups)
 
         # Convert to comparable types
         actual_str = str(actual_value).strip()
@@ -255,10 +256,15 @@ def test_cif_loop_entry_match(adapter: CIFIOAdapter, expected: CifLoopEntryMatch
 
         passed = actual_str == expected_str
 
+        # Build lookup description for log messages
+        lookup_desc = " AND ".join(
+            f"{lookup.row_entry_name}={lookup.row_entry_value}" for lookup in expected.row_lookup
+        )
+
         if passed:
-            log = f"✓ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) matches expected value '{expected.expected_value}'"
+            log = f"✓ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) matches expected value '{expected.expected_value}'"
         else:
-            log = f"✗ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}): expected '{expected.expected_value}', got '{actual_value}'"
+            log = f"✗ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}): expected '{expected.expected_value}', got '{actual_value}'"
 
         return IndividualTestResult(
             test_case_name=generate_test_case_name("loop_match", expected.cif_entry_name),
@@ -278,9 +284,10 @@ def test_cif_loop_entry_non_match(
 ) -> IndividualTestResult:
     """Test that a specific loop entry does NOT match a forbidden value."""
     try:
-        actual_value = adapter.get_loop_entry_from_cif_block(
-            expected.cif_entry_name, expected.row_lookup_name, str(expected.row_lookup_value)
-        )
+        # Convert RowLookup models to tuple list
+        row_lookups = [(lookup.row_entry_name, str(lookup.row_entry_value)) for lookup in expected.row_lookup]
+
+        actual_value = adapter.get_loop_entry_from_cif_block(expected.cif_entry_name, row_lookups)
 
         # Convert to comparable types
         actual_str = str(actual_value).strip()
@@ -288,10 +295,15 @@ def test_cif_loop_entry_non_match(
 
         passed = actual_str != forbidden_str
 
+        # Build lookup description for log messages
+        lookup_desc = " AND ".join(
+            f"{lookup.row_entry_name}={lookup.row_entry_value}" for lookup in expected.row_lookup
+        )
+
         if passed:
-            log = f"✓ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) does not match forbidden value '{expected.forbidden_value}'"
+            log = f"✓ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) does not match forbidden value '{expected.forbidden_value}'"
         else:
-            log = f"✗ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) has forbidden value '{expected.forbidden_value}'"
+            log = f"✗ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) has forbidden value '{expected.forbidden_value}'"
 
         return IndividualTestResult(
             test_case_name=generate_test_case_name("loop_non_match", expected.cif_entry_name),
@@ -311,9 +323,10 @@ def test_cif_loop_entry_within(
 ) -> IndividualTestResult:
     """Test that a numerical loop entry falls within an acceptable range."""
     try:
-        actual_value = adapter.get_loop_entry_from_cif_block(
-            expected.cif_entry_name, expected.row_lookup_name, str(expected.row_lookup_value)
-        )
+        # Convert RowLookup models to tuple list
+        row_lookups = [(lookup.row_entry_name, str(lookup.row_entry_value)) for lookup in expected.row_lookup]
+
+        actual_value = adapter.get_loop_entry_from_cif_block(expected.cif_entry_name, row_lookups)
 
         # Convert to float for numerical comparison
         try:
@@ -327,10 +340,15 @@ def test_cif_loop_entry_within(
 
         passed = expected.min_value <= actual_float <= expected.max_value
 
+        # Build lookup description for log messages
+        lookup_desc = " AND ".join(
+            f"{lookup.row_entry_name}={lookup.row_entry_value}" for lookup in expected.row_lookup
+        )
+
         if passed:
-            log = f"✓ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) value {actual_float} is within [{expected.min_value}, {expected.max_value}]"
+            log = f"✓ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) value {actual_float} is within [{expected.min_value}, {expected.max_value}]"
         else:
-            log = f"✗ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) value {actual_float} is outside [{expected.min_value}, {expected.max_value}]"
+            log = f"✗ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) value {actual_float} is outside [{expected.min_value}, {expected.max_value}]"
 
         return IndividualTestResult(
             test_case_name=generate_test_case_name("loop_within", expected.cif_entry_name),
@@ -350,17 +368,23 @@ def test_cif_loop_entry_contain(
 ) -> IndividualTestResult:
     """Test that a loop entry (string) contains a specific substring."""
     try:
-        actual_value = adapter.get_loop_entry_from_cif_block(
-            expected.cif_entry_name, expected.row_lookup_name, str(expected.row_lookup_value)
-        )
+        # Convert RowLookup models to tuple list
+        row_lookups = [(lookup.row_entry_name, str(lookup.row_entry_value)) for lookup in expected.row_lookup]
+
+        actual_value = adapter.get_loop_entry_from_cif_block(expected.cif_entry_name, row_lookups)
         actual_str = str(actual_value)
 
         passed = expected.expected_value in actual_str
 
+        # Build lookup description for log messages
+        lookup_desc = " AND ".join(
+            f"{lookup.row_entry_name}={lookup.row_entry_value}" for lookup in expected.row_lookup
+        )
+
         if passed:
-            log = f"✓ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) contains '{expected.expected_value}'"
+            log = f"✓ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) contains '{expected.expected_value}'"
         else:
-            log = f"✗ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) does not contain '{expected.expected_value}' (actual: '{actual_str}')"
+            log = f"✗ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) does not contain '{expected.expected_value}' (actual: '{actual_str}')"
 
         return IndividualTestResult(
             test_case_name=generate_test_case_name("loop_contain", expected.cif_entry_name),
@@ -380,9 +404,10 @@ def test_cif_loop_entry_missing(
 ) -> IndividualTestResult:
     """Test that a specific loop column does NOT exist."""
     try:
-        actual_value = adapter.get_loop_entry_from_cif_block(
-            expected.cif_entry_name, expected.row_lookup_name, str(expected.row_lookup_value)
-        )
+        # Convert RowLookup models to tuple list
+        row_lookups = [(lookup.row_entry_name, str(lookup.row_entry_value)) for lookup in expected.row_lookup]
+
+        actual_value = adapter.get_loop_entry_from_cif_block(expected.cif_entry_name, row_lookups)
         # If we get here, the entry exists, which means the test failed
         return IndividualTestResult(
             test_case_name=generate_test_case_name("loop_missing", expected.cif_entry_name),
@@ -410,25 +435,31 @@ def test_cif_loop_entry_present(
 ) -> IndividualTestResult:
     """Test that a loop entry exists in a specific row."""
     try:
-        actual_value = adapter.get_loop_entry_from_cif_block(
-            expected.cif_entry_name, expected.row_lookup_name, str(expected.row_lookup_value)
-        )
+        # Convert RowLookup models to tuple list
+        row_lookups = [(lookup.row_entry_name, str(lookup.row_entry_value)) for lookup in expected.row_lookup]
+
+        actual_value = adapter.get_loop_entry_from_cif_block(expected.cif_entry_name, row_lookups)
         actual_str = str(actual_value).strip()
 
         # Check if value is undefined (? or .)
         is_undefined = actual_str in ("?", ".")
 
+        # Build lookup description for log messages
+        lookup_desc = " AND ".join(
+            f"{lookup.row_entry_name}={lookup.row_entry_value}" for lookup in expected.row_lookup
+        )
+
         if is_undefined and not expected.allow_unknown:
             return IndividualTestResult(
                 test_case_name=generate_test_case_name("loop_present", expected.cif_entry_name),
                 passed=False,
-                log=f"✗ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) is present but has undefined value '{actual_str}' (allow_unknown=False)",
+                log=f"✗ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) is present but has undefined value '{actual_str}' (allow_unknown=False)",
             )
 
         return IndividualTestResult(
             test_case_name=generate_test_case_name("loop_present", expected.cif_entry_name),
             passed=True,
-            log=f"✓ Loop entry '{expected.cif_entry_name}' (where {expected.row_lookup_name}={expected.row_lookup_value}) is present with value '{actual_value}'",
+            log=f"✓ Loop entry '{expected.cif_entry_name}' (where {lookup_desc}) is present with value '{actual_value}'",
         )
     except (ValueMissingError, ValueError, IndexError) as e:
         return IndividualTestResult(

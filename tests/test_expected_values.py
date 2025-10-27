@@ -173,16 +173,16 @@ def test_parse_loop_match():
         "result_type": "cif_loop_value",
         "test_type": "match",
         "cif_entry_name": "_loop.value",
-        "row_lookup_name": "_loop.index",
-        "row_lookup_value": 1,
+        "row_lookup": [{"row_entry_name": "_loop.index", "row_entry_value": 1}],
         "expected_value": 12,
     }
     result = parse_data(data)
 
     assert isinstance(result, CifLoopEntryMatchExpectedResult)
     assert result.cif_entry_name == "_loop.value"
-    assert result.row_lookup_name == "_loop.index"
-    assert result.row_lookup_value == 1
+    assert len(result.row_lookup) == 1
+    assert result.row_lookup[0].row_entry_name == "_loop.index"
+    assert result.row_lookup[0].row_entry_value == 1
     assert result.expected_value == 12
 
 
@@ -192,8 +192,7 @@ def test_parse_loop_non_match():
         "result_type": "cif_loop_value",
         "test_type": "non-match",
         "cif_entry_name": "_loop.value",
-        "row_lookup_name": "_loop.index",
-        "row_lookup_value": 1,
+        "row_lookup": [{"row_entry_name": "_loop.index", "row_entry_value": 1}],
         "forbidden_value": 13,
     }
     result = parse_data(data)
@@ -208,8 +207,7 @@ def test_parse_loop_within_deviation():
         "result_type": "cif_loop_value",
         "test_type": "within",
         "cif_entry_name": "_loop.value",
-        "row_lookup_name": "_loop.index",
-        "row_lookup_value": 2,
+        "row_lookup": [{"row_entry_name": "_loop.index", "row_entry_value": 2}],
         "expected_value": 12,
         "allowed_deviation": 0.001,
     }
@@ -226,8 +224,7 @@ def test_parse_loop_within_minmax():
         "result_type": "cif_loop_value",
         "test_type": "within",
         "cif_entry_name": "_loop.value",
-        "row_lookup_name": "_loop.index",
-        "row_lookup_value": 1,
+        "row_lookup": [{"row_entry_name": "_loop.index", "row_entry_value": 1}],
         "min_value": 10,
         "max_value": 15,
     }
@@ -244,8 +241,7 @@ def test_parse_loop_contain():
         "result_type": "cif_loop_value",
         "test_type": "contain",
         "cif_entry_name": "_loop.text",
-        "row_lookup_name": "_loop.index",
-        "row_lookup_value": 2,
+        "row_lookup": [{"row_entry_name": "_loop.index", "row_entry_value": 2}],
         "expected_value": "another",
     }
     result = parse_data(data)
@@ -260,8 +256,7 @@ def test_parse_loop_missing():
         "result_type": "cif_loop_value",
         "test_type": "missing",
         "cif_entry_name": "_loop.nonexistent",
-        "row_lookup_name": "_loop.index",
-        "row_lookup_value": 1,
+        "row_lookup": [{"row_entry_name": "_loop.index", "row_entry_value": 1}],
     }
     result = parse_data(data)
 
@@ -275,8 +270,7 @@ def test_parse_loop_present():
         "result_type": "cif_loop_value",
         "test_type": "present",
         "cif_entry_name": "_loop.maybe_undefined",
-        "row_lookup_name": "_loop.index",
-        "row_lookup_value": 1,
+        "row_lookup": [{"row_entry_name": "_loop.index", "row_entry_value": 1}],
         "allow_unknown": True,
     }
     result = parse_data(data)

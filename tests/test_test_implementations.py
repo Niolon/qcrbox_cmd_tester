@@ -15,6 +15,7 @@ from qcrbox_cmd_tester.models.expected_values import (
     CifLoopEntryNonMatchExpectedResult,
     CifLoopEntryPresentExpectedResult,
     CifLoopEntryWithinExpectedResult,
+    RowLookup,
     StatusExpectedResult,
 )
 from qcrbox_cmd_tester.test_implementations import (
@@ -38,11 +39,14 @@ _cif.value_is_undefined ?
 
 loop_
 _loop_entry.index
+_loop_entry.index_additional
 _loop_entry.value
 _loop_entry.present_entry
 _loop_entry.potentially_undefined
-1 12 'multi-word string' ?
-2 13 'another string' .
+1 6 12 'multi-word string' ?
+2 7 13 'another string' .
+2 6 18 'do not use this one' .
+3 7 19 'do not find this one either' ?
 """
 
 
@@ -167,8 +171,7 @@ def test_loop_match_success(sample_cif):
     """Test successful loop entry match."""
     expected = CifLoopEntryMatchExpectedResult(
         cif_entry_name="_loop_entry.value",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         expected_value=12,
     )
     result = check_result(sample_cif, expected)
@@ -180,8 +183,7 @@ def test_loop_match_failure(sample_cif):
     """Test failed loop entry match."""
     expected = CifLoopEntryMatchExpectedResult(
         cif_entry_name="_loop_entry.value",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         expected_value=99,
     )
     result = check_result(sample_cif, expected)
@@ -193,8 +195,7 @@ def test_loop_present_undefined_allowed(sample_cif):
     """Test loop entry present with undefined value allowed."""
     expected = CifLoopEntryPresentExpectedResult(
         cif_entry_name="_loop_entry.potentially_undefined",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         allow_unknown=True,
     )
     result = check_result(sample_cif, expected)
@@ -206,8 +207,7 @@ def test_loop_present_undefined_not_allowed(sample_cif):
     """Test loop entry present with undefined value not allowed."""
     expected = CifLoopEntryPresentExpectedResult(
         cif_entry_name="_loop_entry.potentially_undefined",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         allow_unknown=False,
     )
     result = check_result(sample_cif, expected)
@@ -272,8 +272,7 @@ def test_loop_non_match_success(sample_cif):
     """Test successful loop entry non-match verification."""
     expected = CifLoopEntryNonMatchExpectedResult(
         cif_entry_name="_loop_entry.value",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         forbidden_value=99,
     )
     result = check_result(sample_cif, expected)
@@ -285,8 +284,7 @@ def test_loop_non_match_failure(sample_cif):
     """Test failed loop entry non-match verification."""
     expected = CifLoopEntryNonMatchExpectedResult(
         cif_entry_name="_loop_entry.value",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         forbidden_value=12,
     )
     result = check_result(sample_cif, expected)
@@ -298,8 +296,7 @@ def test_loop_within_success(sample_cif):
     """Test successful loop entry within range check."""
     expected = CifLoopEntryWithinExpectedResult(
         cif_entry_name="_loop_entry.value",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         min_value=11,
         max_value=13,
     )
@@ -313,8 +310,7 @@ def test_loop_within_failure(sample_cif):
     """Test failed loop entry within range check."""
     expected = CifLoopEntryWithinExpectedResult(
         cif_entry_name="_loop_entry.value",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         min_value=20,
         max_value=30,
     )
@@ -328,8 +324,7 @@ def test_loop_contain_success(sample_cif):
     """Test successful loop entry substring containment check."""
     expected = CifLoopEntryContainExpectedResult(
         cif_entry_name="_loop_entry.present_entry",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         expected_value="multi",
     )
     result = check_result(sample_cif, expected)
@@ -341,8 +336,7 @@ def test_loop_contain_failure(sample_cif):
     """Test failed loop entry substring containment check."""
     expected = CifLoopEntryContainExpectedResult(
         cif_entry_name="_loop_entry.present_entry",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         expected_value="not_there",
     )
     result = check_result(sample_cif, expected)
@@ -354,8 +348,7 @@ def test_loop_missing_success(sample_cif):
     """Test successful loop entry missing verification."""
     expected = CifLoopEntryMissingExpectedResult(
         cif_entry_name="_loop_entry.nonexistent",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
     )
     result = check_result(sample_cif, expected)
 
@@ -366,7 +359,8 @@ def test_loop_missing_success(sample_cif):
 def test_loop_missing_failure(sample_cif):
     """Test failed loop entry missing verification."""
     expected = CifLoopEntryMissingExpectedResult(
-        cif_entry_name="_loop_entry.value", row_lookup_name="_loop_entry.index", row_lookup_value=1
+        cif_entry_name="_loop_entry.value",
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
     )
     result = check_result(sample_cif, expected)
 
@@ -436,8 +430,7 @@ def test_loop_non_match_missing_entry(sample_cif):
     """Test loop non-match when entry is missing."""
     expected = CifLoopEntryNonMatchExpectedResult(
         cif_entry_name="_nonexistent.entry",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         forbidden_value="test",
     )
     result = check_result(sample_cif, expected)
@@ -449,8 +442,7 @@ def test_loop_within_missing_entry(sample_cif):
     """Test loop within when entry is missing."""
     expected = CifLoopEntryWithinExpectedResult(
         cif_entry_name="_nonexistent.entry",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         min_value=1.0,
         max_value=2.0,
     )
@@ -463,8 +455,7 @@ def test_loop_within_invalid_number(sample_cif):
     """Test loop within when entry is not a valid number."""
     expected = CifLoopEntryWithinExpectedResult(
         cif_entry_name="_loop_entry.present_entry",  # This is a string
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         min_value=1.0,
         max_value=2.0,
     )
@@ -478,8 +469,7 @@ def test_loop_contain_missing_entry(sample_cif):
     """Test loop contain when entry is missing."""
     expected = CifLoopEntryContainExpectedResult(
         cif_entry_name="_nonexistent.entry",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         expected_value="test",
     )
     result = check_result(sample_cif, expected)
@@ -491,8 +481,7 @@ def test_loop_missing_with_invalid_row(sample_cif):
     """Test loop missing with invalid row lookup."""
     expected = CifLoopEntryMissingExpectedResult(
         cif_entry_name="_loop_entry.value",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=999,  # Non-existent row
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=999)],  # Non-existent row
     )
     result = check_result(sample_cif, expected)
 
@@ -504,10 +493,61 @@ def test_loop_present_missing_entry(sample_cif):
     """Test loop present when entry is missing."""
     expected = CifLoopEntryPresentExpectedResult(
         cif_entry_name="_nonexistent.entry",
-        row_lookup_name="_loop_entry.index",
-        row_lookup_value=1,
+        row_lookup=[RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1)],
         allow_unknown=False,
     )
     result = check_result(sample_cif, expected)
 
     assert result.passed is False
+
+
+# Test multi-row lookup functionality
+
+
+def test_multi_row_lookup_match_success(sample_cif):
+    """Test successful loop entry match with multiple lookup conditions."""
+    expected = CifLoopEntryMatchExpectedResult(
+        cif_entry_name="_loop_entry.value",
+        row_lookup=[
+            RowLookup(row_entry_name="_loop_entry.index", row_entry_value=2),
+            RowLookup(row_entry_name="_loop_entry.index_additional", row_entry_value=6),
+        ],
+        expected_value=18,  # Should match row 3: 2 6 18 ...
+    )
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is True
+    assert "2 AND" in result.log
+    assert "6" in result.log
+
+
+def test_multi_row_lookup_no_match(sample_cif):
+    """Test loop entry match fails when no row matches all conditions."""
+    expected = CifLoopEntryMatchExpectedResult(
+        cif_entry_name="_loop_entry.value",
+        row_lookup=[
+            RowLookup(row_entry_name="_loop_entry.index", row_entry_value=1),
+            RowLookup(row_entry_name="_loop_entry.index_additional", row_entry_value=7),  # Impossible combo
+        ],
+        expected_value=12,
+    )
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is False
+    assert "No row found matching conditions" in result.log
+
+
+def test_multi_row_lookup_wrong_value(sample_cif):
+    """Test multi-row lookup finds correct row but value doesn't match."""
+    expected = CifLoopEntryMatchExpectedResult(
+        cif_entry_name="_loop_entry.value",
+        row_lookup=[
+            RowLookup(row_entry_name="_loop_entry.index", row_entry_value=2),
+            RowLookup(row_entry_name="_loop_entry.index_additional", row_entry_value=7),
+        ],
+        expected_value=99,  # Should find row 2 (2 7 13) but value is wrong
+    )
+    result = check_result(sample_cif, expected)
+
+    assert result.passed is False
+    assert "expected '99', got '13'" in result.log

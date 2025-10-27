@@ -49,6 +49,10 @@ dev = { features = ["test", "devtools"], solve-group = "default" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Ignore collection warnings for Pydantic models that start with "Test"
+filterwarnings = [
+    "ignore::pytest.PytestCollectionWarning",
+]
 
 [tool.coverage.run]
 source = ["src"]

@@ -23,20 +23,23 @@ test_cases:
       - result_type: cif_loop_value
         test_type: match
         cif_entry_name: "_atom_site.adp_type"
-        row_lookup_name: "_atom_site.label"
-        row_lookup_value: "O1"
+        row_lookup:
+          - row_entry_name: "_atom_site.label"
+            row_entry_value: "O1"
         expected_value: "Uani"
       - result_type: cif_loop_value
         test_type: match
         cif_entry_name: "_atom_site.adp_type"
-        row_lookup_name: "_atom_site.label"
-        row_lookup_value: "H2a"
+        row_lookup:
+          - row_entry_name: "_atom_site.label"
+            row_entry_value: "H2a"
         expected_value: "Uiso"
       - result_type: cif_loop_value
         test_type: within
         cif_entry_name: "_atom_site_aniso.u_11"
-        row_lookup_name: "_atom_site_aniso.label"
-        row_lookup_value: "C2"
+        row_lookup:
+          - row_entry_name: "_atom_site_aniso.label"
+            row_entry_value: "C2"
         expected_value: 0.02803
         allowed_deviation: 0.0001
 

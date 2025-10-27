@@ -26,7 +26,7 @@ def test_parse_all_results_from_yaml():
 
     # Verify we parsed them all
     assert len(parsed_results) == len(expected_results)
-    assert len(parsed_results) == 18  # From the YAML file
+    assert len(parsed_results) == 19  # From the YAML file (added multi-row lookup test)
 
     # Verify various types are present
     result_types = [type(r).__name__ for r in parsed_results]
