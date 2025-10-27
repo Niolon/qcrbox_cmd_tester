@@ -1,0 +1,52 @@
+site_name: QCrBox Command Tester Documentation
+site_description: Documentation for QCrBox Command Tester
+site_author: Paul Niklas Ruth
+repo_url: https://github.com/Niolon/qcrbox_cmd_tester
+repo_name: Niolon/qcrbox_cmd_tester
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+nav:
+  - Home: README.md
+  - YAML Format: docs/yaml-format.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - toc:
+      permalink: true
+  - tables
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Niolon/qcrbox_cmd_tester

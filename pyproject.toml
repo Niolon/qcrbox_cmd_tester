@@ -1,9 +1,42 @@
 [project]
-authors = [{name = "Paul Niklas Ruth", email = "panikruth@gmail.com"}]
 name = "qcrbox_cmd_tester"
-requires-python = ">= 3.11"
 version = "0.1.0"
-dependencies = ["qcrboxapiclient @ git+https://github.com/QCrBox/QCrBoxAPIClient@0.1.0?rev_type=tag"]
+description = "Command-line test suite runner for QCrBox API"
+readme = "README.md"
+requires-python = ">= 3.11"
+license = {text = "MPL-2.0"}
+authors = [{name = "Paul Niklas Ruth", email = "panikruth@gmail.com"}]
+keywords = ["crystallography", "testing", "qcrbox", "cif"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "pyyaml>=6.0.3",
+    "pydantic>=2.12.2",
+    "pycifrw>=4.4.6",
+    "qcrboxapiclient @ git+https://github.com/QCrBox/QCrBoxAPIClient@0.1.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+dev = [
+    "qcrbox_cmd_tester[test]",
+    "jupyterlab",
+    "ruff>=0.14.1",
+    "pre-commit",
+]
+
+[project.scripts]
+qcrbox-test = "qcrbox_cmd_tester.__main__:main"
 
 [build-system]
 build-backend = "hatchling.build"
@@ -31,6 +64,8 @@ test = "pytest tests/"
 test-cov = "pytest tests/ --cov=src/qcrbox_cmd_tester --cov-report=term-missing"
 
 [tool.pixi.dependencies]
+# Main dependencies are now defined in [project.dependencies]
+# Pixi will use those, but we can add version constraints here if needed
 pyyaml = ">=6.0.3,<7"
 pydantic = ">=2.12.2,<3"
 pycifrw = ">=4.4.6,<5"

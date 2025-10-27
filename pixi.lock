@@ -55,7 +55,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
-      - pypi: git+https://github.com/QCrBox/QCrBoxAPIClient?tag=0.1.0#5d5745b9165205fbe0c0c06e1d39d747d135db54
+      - pypi: git+https://github.com/QCrBox/QCrBoxAPIClient?rev=0.1.0#5d5745b9165205fbe0c0c06e1d39d747d135db54
       - pypi: https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl
       - pypi: ./
@@ -239,7 +239,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstandard-0.25.0-py313h54dd161_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/zstd-1.5.7-hb8e6e7a_2.conda
-      - pypi: git+https://github.com/QCrBox/QCrBoxAPIClient?tag=0.1.0#5d5745b9165205fbe0c0c06e1d39d747d135db54
+      - pypi: git+https://github.com/QCrBox/QCrBoxAPIClient?rev=0.1.0#5d5745b9165205fbe0c0c06e1d39d747d135db54
       - pypi: ./
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
@@ -2266,12 +2266,21 @@ packages:
 - pypi: ./
   name: qcrbox-cmd-tester
   version: 0.1.0
-  sha256: 38ebc9cc924a135218e34ed9e7091d799d58850815d9dd5b860c19cfa7aeef57
+  sha256: aea609e3aa09bbe7ca06bed7463bdb9f0bb0f4d0123be2785b2156c785987ab2
   requires_dist:
+  - pyyaml>=6.0.3
+  - pydantic>=2.12.2
+  - pycifrw>=4.4.6
   - qcrboxapiclient @ git+https://github.com/QCrBox/QCrBoxAPIClient@0.1.0
+  - pytest>=7.0.0 ; extra == 'test'
+  - pytest-cov>=4.0.0 ; extra == 'test'
+  - qcrbox-cmd-tester[test] ; extra == 'dev'
+  - jupyterlab ; extra == 'dev'
+  - ruff>=0.14.1 ; extra == 'dev'
+  - pre-commit ; extra == 'dev'
   requires_python: '>=3.11'
   editable: true
-- pypi: git+https://github.com/QCrBox/QCrBoxAPIClient?tag=0.1.0#5d5745b9165205fbe0c0c06e1d39d747d135db54
+- pypi: git+https://github.com/QCrBox/QCrBoxAPIClient?rev=0.1.0#5d5745b9165205fbe0c0c06e1d39d747d135db54
   name: qcrboxapiclient
   version: 0.1.0
   requires_dist:

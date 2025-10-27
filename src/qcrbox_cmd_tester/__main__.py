@@ -2,7 +2,7 @@
 Command-line interface for running QCrBox test suites.
 
 Usage:
-    python -m qcrbox_cmd_tester [--tests-dir DIR] [--qcrbox-url URL] [--debug]
+    python -m qcrbox_cmd_tester [--test-location DIR] [--qcrbox-url URL] [--debug]
 """
 
 import argparse
@@ -118,12 +118,12 @@ def save_debug_logs(
     return suite_debug_dir
 
 
-def run_test_suites_from_directory(tests_dir: Path, qcrbox_url: str, debug: bool = False) -> bool:
+def run_test_suites_from_path(tests_path: Path, qcrbox_url: str, debug: bool = False) -> bool:
     """
-    Run all test suites found in the specified directory.
+    Run test suite(s) from the specified file or directory.
 
     Args:
-        tests_dir: Directory containing YAML test suite files
+        tests_path: Path to a YAML test suite file or directory containing YAML test suite files
         qcrbox_url: URL of the QCrBox API
         debug: If True, save detailed debug logs for failing tests
 
@@ -140,14 +140,28 @@ def run_test_suites_from_directory(tests_dir: Path, qcrbox_url: str, debug: bool
         debug_base_dir.mkdir(exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    # Find all YAML files in the directory
-    yaml_files = list(tests_dir.glob("*.yaml")) + list(tests_dir.glob("*.yml"))
-
-    if not yaml_files:
-        print(f"No YAML test files found in {tests_dir}", file=sys.stderr)
+    # Determine if path is a file or directory
+    if tests_path.is_file():
+        # Single YAML file
+        if tests_path.suffix.lower() not in [".yaml", ".yml"]:
+            print(f"Error: '{tests_path}' is not a YAML file (.yaml or .yml)", file=sys.stderr)
+            return False
+        yaml_files = [tests_path]
+    elif tests_path.is_dir():
+        # Directory containing YAML files
+        yaml_files = list(tests_path.glob("*.yaml")) + list(tests_path.glob("*.yml"))
+    else:
+        print(f"Error: '{tests_path}' is neither a file nor a directory", file=sys.stderr)
         return False
 
-    print(f"Found {len(yaml_files)} test suite(s) in {tests_dir}")
+    if not yaml_files:
+        print(f"No YAML test files found in {tests_path}", file=sys.stderr)
+        return False
+
+    if tests_path.is_file():
+        print(f"Running test suite from: {tests_path.name}")
+    else:
+        print(f"Found {len(yaml_files)} test suite(s) in {tests_path}")
 
     all_passed = True
     results = []
@@ -216,7 +230,10 @@ Examples:
   python -m qcrbox_cmd_tester
 
   # Run tests from custom directory
-  python -m qcrbox_cmd_tester --tests-dir /path/to/tests
+  python -m qcrbox_cmd_tester --test-location /path/to/tests
+
+  # Run a single test file
+  python -m qcrbox_cmd_tester --test-location qcrbox_tests/olex2.yaml
 
   # Specify custom QCrBox API URL
   python -m qcrbox_cmd_tester --qcrbox-url http://localhost:8000
@@ -224,10 +241,10 @@ Examples:
     )
 
     parser.add_argument(
-        "--tests-dir",
+        "--test-location",
         type=Path,
         default=Path("qcrbox_tests"),
-        help="Directory containing YAML test suite files (default: qcrbox_tests)",
+        help="Path to a YAML test suite file or directory containing YAML files (default: qcrbox_tests)",
     )
 
     parser.add_argument(
@@ -245,18 +262,18 @@ Examples:
 
     args = parser.parse_args()
 
-    # Validate tests directory
-    if not args.tests_dir.exists():
-        print(f"Error: Tests directory '{args.tests_dir}' does not exist", file=sys.stderr)
+    # Validate tests path
+    if not args.test_location.exists():
+        print(f"Error: Path '{args.test_location}' does not exist", file=sys.stderr)
         return 1
 
-    if not args.tests_dir.is_dir():
-        print(f"Error: '{args.tests_dir}' is not a directory", file=sys.stderr)
+    if not args.test_location.is_file() and not args.test_location.is_dir():
+        print(f"Error: '{args.test_location}' is not a file or directory", file=sys.stderr)
         return 1
 
     # Run tests
     try:
-        all_passed = run_test_suites_from_directory(args.tests_dir, args.qcrbox_url, args.debug)
+        all_passed = run_test_suites_from_path(args.test_location, args.qcrbox_url, args.debug)
         return 0 if all_passed else 1
     except KeyboardInterrupt:
         print("\n\nTest run interrupted by user", file=sys.stderr)
