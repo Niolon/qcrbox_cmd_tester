@@ -16,7 +16,6 @@ from qcrbox_cmd_tester.models.expected_values import (
     CifLoopEntryPresentExpectedResult,
     CifLoopEntryWithinExpectedResult,
     RowLookup,
-    StatusExpectedResult,
 )
 from qcrbox_cmd_tester.test_implementations import (
     TEST_FUNCTION_MAP,
@@ -365,16 +364,6 @@ def test_loop_missing_failure(sample_cif):
     result = check_result(sample_cif, expected)
 
     assert result.passed is False
-
-
-def test_status_result(sample_cif):
-    """Test status result (not implemented for CIF validation)."""
-    expected = StatusExpectedResult(expected="successful")
-    result = check_result(sample_cif, expected)
-
-    # Status tests return True with a note that it's not implemented
-    assert result.passed is True
-    assert "not implemented" in result.log.lower()
 
 
 def test_match_missing_entry(sample_cif):
