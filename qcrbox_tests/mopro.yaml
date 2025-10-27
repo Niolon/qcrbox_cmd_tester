@@ -1,6 +1,6 @@
 # Test suite for MoProSuite application
 
-application_name: mopro
+application_slug: mopro
 application_version: "2024.10"
 
 test_cases:

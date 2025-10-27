@@ -31,7 +31,7 @@ class TestCaseResult:
 class TestSuiteResult:
     """Result of executing an entire test suite."""
 
-    application_name: str
+    application_slug: str
     all_passed: bool
     test_results: list[TestCaseResult]
 
@@ -50,7 +50,7 @@ def run_test_case(client: Client, test_case: TestCase) -> TestCaseResult:
     command_result = run_qcrbox_command(
         client,
         test_case.qcrbox_command_name,
-        test_case.qcrbox_application_name,
+        test_case.qcrbox_application_slug,
         test_case.qcrbox_application_version,
         test_case.qcrbox_command_parameters,
     )
@@ -113,7 +113,7 @@ def run_test_suite(client: Client, test_suite: TestSuite) -> TestSuiteResult:
     """
     case_results = [run_test_case(client, test_case) for test_case in test_suite.tests]
     return TestSuiteResult(
-        application_name=test_suite.application_name,
+        application_slug=test_suite.application_slug,
         all_passed=all(case.all_passed for case in case_results),
         test_results=case_results,
     )

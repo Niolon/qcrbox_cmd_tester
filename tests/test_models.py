@@ -207,7 +207,7 @@ def test_test_case_must_have_expected_results():
     with pytest.raises(ValueError, match="at least one expected result"):
         TestCase(
             name="test1",
-            qcrbox_application_name="app",
+            qcrbox_application_slug="app",
             qcrbox_application_version="1.0",
             qcrbox_command_name="cmd",
             qcrbox_command_parameters=[],
@@ -220,7 +220,7 @@ def test_test_case_duplicate_parameter_names():
     with pytest.raises(ValueError, match="Duplicate parameter names"):
         TestCase(
             name="test1",
-            qcrbox_application_name="app",
+            qcrbox_application_slug="app",
             qcrbox_application_version="1.0",
             qcrbox_command_name="cmd",
             qcrbox_command_parameters=[
@@ -237,7 +237,7 @@ def test_test_case_duplicate_parameter_names():
 def test_test_suite_from_yaml_file():
     """Test loading TestSuite from a YAML file."""
     yaml_content = """
-application_name: test_app
+application_slug: test_app
 application_version: 1.0.0
 description: Test suite
 test_cases:
@@ -258,7 +258,7 @@ test_cases:
     try:
         suite = TestSuite.from_yaml_file(temp_file)
 
-        assert suite.application_name == "test_app"
+        assert suite.application_slug == "test_app"
         assert suite.application_version == "1.0.0"
         assert len(suite.tests) == 1
         assert suite.tests[0].name == "test1"
@@ -270,7 +270,7 @@ def test_test_suite_must_have_tests():
     """Test that TestSuite must have at least one test."""
     with pytest.raises(ValueError, match="at least one test"):
         TestSuite(
-            application_name="app",
+            application_slug="app",
             application_version="1.0",
             tests=[],  # Empty - should fail
         )
@@ -280,7 +280,7 @@ def test_test_suite_duplicate_test_names():
     """Test that TestSuite validates unique test names."""
     test1 = TestCase(
         name="test1",
-        qcrbox_application_name="app",
+        qcrbox_application_slug="app",
         qcrbox_application_version="1.0",
         qcrbox_command_name="cmd",
         qcrbox_command_parameters=[],
@@ -289,7 +289,7 @@ def test_test_suite_duplicate_test_names():
 
     test2 = TestCase(
         name="test1",  # Duplicate name!
-        qcrbox_application_name="app",
+        qcrbox_application_slug="app",
         qcrbox_application_version="1.0",
         qcrbox_command_name="cmd2",
         qcrbox_command_parameters=[],
@@ -297,26 +297,26 @@ def test_test_suite_duplicate_test_names():
     )
 
     with pytest.raises(ValueError, match="Duplicate test names"):
-        TestSuite(application_name="app", application_version="1.0", tests=[test1, test2])
+        TestSuite(application_slug="app", application_version="1.0", tests=[test1, test2])
 
 
 def test_test_suite_to_dict():
     """Test converting TestSuite to dictionary."""
     test_case = TestCase(
         name="test1",
-        qcrbox_application_name="app",
+        qcrbox_application_slug="app",
         qcrbox_application_version="1.0",
         qcrbox_command_name="cmd",
         qcrbox_command_parameters=[],
         expected_results=[CifEntryMatchExpectedResult(cif_entry_name="_test", expected_value="test")],
     )
 
-    suite = TestSuite(application_name="app", application_version="1.0", tests=[test_case])
+    suite = TestSuite(application_slug="app", application_version="1.0", tests=[test_case])
 
     result = suite.to_dict()
 
     assert isinstance(result, dict)
-    assert result["application_name"] == "app"
+    assert result["application_slug"] == "app"
     assert result["application_version"] == "1.0"
     assert len(result["tests"]) == 1
     assert result["tests"][0]["name"] == "test1"
@@ -326,14 +326,14 @@ def test_test_suite_to_json_file():
     """Test exporting TestSuite to JSON file."""
     test_case = TestCase(
         name="test1",
-        qcrbox_application_name="app",
+        qcrbox_application_slug="app",
         qcrbox_application_version="1.0",
         qcrbox_command_name="cmd",
         qcrbox_command_parameters=[],
         expected_results=[CifEntryMatchExpectedResult(cif_entry_name="_test", expected_value="test")],
     )
 
-    suite = TestSuite(application_name="app", application_version="1.0", tests=[test_case])
+    suite = TestSuite(application_slug="app", application_version="1.0", tests=[test_case])
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         temp_file = Path(f.name)
@@ -347,7 +347,7 @@ def test_test_suite_to_json_file():
         with open(temp_file) as f:
             data = json.load(f)
 
-        assert data["application_name"] == "app"
+        assert data["application_slug"] == "app"
         assert len(data["tests"]) == 1
     finally:
         temp_file.unlink()

@@ -23,7 +23,7 @@ A test suite YAML file defines tests for a specific QCrBox application. Each fil
 The top-level structure of a test suite:
 
 ```yaml
-application_name: string          # Required: Name of the QCrBox application
+application_slug: string          # Required: Name of the QCrBox application
 application_version: string       # Required: Version of the application
 description: string               # Optional: Description of the test suite
 test_cases: []                    # Required: List of test cases (at least one)
@@ -32,7 +32,7 @@ test_cases: []                    # Required: List of test cases (at least one)
 ### Example
 
 ```yaml
-application_name: qcrboxtools
+application_slug: qcrboxtools
 application_version: "0.0.5"
 description: "Test suite for qcrboxtools commands"
 test_cases:
@@ -409,7 +409,7 @@ row_lookup:
 ### Example 1: Basic Test with External File
 
 ```yaml
-application_name: qcrboxtools
+application_slug: qcrboxtools
 application_version: "0.0.5"
 test_cases:
   - name: "iso2aniso epoxide"
@@ -452,7 +452,7 @@ test_cases:
 ### Example 2: Test with Inline File Content
 
 ```yaml
-application_name: qcrboxtools
+application_slug: qcrboxtools
 application_version: "0.0.5"
 test_cases:
   - name: "replace structure"
@@ -503,7 +503,7 @@ test_cases:
 ### Example 3: Multiple Test Types
 
 ```yaml
-application_name: myapp
+application_slug: myapp
 application_version: "1.0.0"
 test_cases:
   - name: "comprehensive test"
@@ -569,7 +569,7 @@ test_cases:
 The YAML parser enforces the following rules:
 
 1. **Test Suite Level:**
-   - Must have `application_name` and `application_version`
+   - Must have `application_slug` and `application_version`
    - Must have at least one test case
    - All test case names must be unique
 

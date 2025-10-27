@@ -25,7 +25,7 @@ def print_test_results(result: TestSuiteResult, debug_dir: Path | None = None) -
     passed_expected_results = sum(sum(1 for ir in tr.individual_results if ir.passed) for tr in result.test_results)
 
     print(f"\n{'=' * 80}")
-    print(f"Test Suite: {result.application_name}")
+    print(f"Test Suite: {result.application_slug}")
     print(f"Status: {'✓ PASSED' if result.all_passed else '✗ FAILED'}")
     print(f"Test Cases: {passed_test_cases}/{total_test_cases} passed")
     print(f"Expected Results: {passed_expected_results}/{total_expected_results} passed")
@@ -70,14 +70,14 @@ def save_debug_logs(
         return None
 
     # Create debug directory for this suite
-    safe_app_name = result.application_name.replace("/", "_").replace(" ", "_")
+    safe_app_name = result.application_slug.replace("/", "_").replace(" ", "_")
     suite_debug_dir = debug_base_dir / f"{timestamp}_{safe_app_name}"
     suite_debug_dir.mkdir(parents=True, exist_ok=True)
 
     # Create summary log file
     log_file = suite_debug_dir / "summary.log"
     with open(log_file, "w") as f:
-        f.write(f"Test Suite: {result.application_name}\n")
+        f.write(f"Test Suite: {result.application_slug}\n")
         f.write(f"Timestamp: {timestamp}\n")
         f.write(f"Status: {'PASSED' if result.all_passed else 'FAILED'}\n")
         f.write("=" * 80 + "\n\n")
@@ -93,7 +93,7 @@ def save_debug_logs(
                 if test_case:
                     f.write(f"Command: {test_case.qcrbox_command_name}\n")
                     f.write(
-                        f"Application: {test_case.qcrbox_application_name} v{test_case.qcrbox_application_version}\n"
+                        f"Application: {test_case.qcrbox_application_slug} v{test_case.qcrbox_application_version}\n"
                     )
                     f.write(f"Command Status: {test_result.command_status}\n")
 
@@ -171,7 +171,7 @@ def run_test_suites_from_path(tests_path: Path, qcrbox_url: str, debug: bool = F
         print(f"\nLoading test suite from: {yaml_file.name}")
         try:
             test_suite = TestSuite.from_yaml_file(yaml_file)
-            print(f"  Application: {test_suite.application_name} v{test_suite.application_version}")
+            print(f"  Application: {test_suite.application_slug} v{test_suite.application_version}")
             print(f"  Tests: {len(test_suite.tests)}")
 
             result = run_test_suite(client, test_suite)

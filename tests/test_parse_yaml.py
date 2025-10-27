@@ -11,7 +11,7 @@ from qcrbox_cmd_tester.models import QCrBoxFileParameter, QCrBoxParameter, TestC
 def test_yaml_dict():
     """Sample YAML dictionary for testing."""
     return {
-        "application_name": "TestApp",
+        "application_slug": "TestApp",
         "application_version": "0.1.0",
         "description": "A test application",
         "test_cases": [
@@ -36,7 +36,7 @@ def test_create_test_suite_from_yaml(test_yaml_dict):
     test_suite = TestSuite.from_yaml_dict(test_yaml_dict, base_folder=Path("."))
 
     assert isinstance(test_suite, TestSuite)
-    assert test_suite.application_name == "TestApp"
+    assert test_suite.application_slug == "TestApp"
     assert len(test_suite.tests) == 1
 
     test_case = test_suite.tests[0]

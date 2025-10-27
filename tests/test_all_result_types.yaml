@@ -1,5 +1,5 @@
 
-application_name: example_app
+application_slug: example_app
 application_version: "1.2.3"
 test_cases:
   - name: "example test case 1"

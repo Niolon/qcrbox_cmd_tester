@@ -67,7 +67,7 @@ class TestCase(BaseModel):
     name: str = Field(..., min_length=1)
     description: str = Field(default="")
 
-    qcrbox_application_name: str = Field(..., min_length=1)
+    qcrbox_application_slug: str = Field(..., min_length=1)
     qcrbox_application_version: str = Field(..., min_length=1)
     qcrbox_command_name: str = Field(..., min_length=1)
     qcrbox_command_parameters: list[QCrBoxParameterType] = Field(default_factory=list)
@@ -75,7 +75,7 @@ class TestCase(BaseModel):
     expected_results: list[ExpectedResultType] = Field(default_factory=list)
 
     @classmethod
-    def from_yaml_dict(cls, data: dict, application_name: str, application_version: str, base_folder: Path) -> Self:
+    def from_yaml_dict(cls, data: dict, application_slug: str, application_version: str, base_folder: Path) -> Self:
         """Create TestCase from YAML dictionary"""
         # Parse parameters
         parameters = [
@@ -89,7 +89,7 @@ class TestCase(BaseModel):
         return cls(
             name=data["name"],
             description=data.get("description", ""),
-            qcrbox_application_name=application_name,
+            qcrbox_application_slug=application_slug,
             qcrbox_application_version=application_version,
             qcrbox_command_name=data["command_name"],
             qcrbox_command_parameters=parameters,
@@ -115,7 +115,7 @@ class TestCase(BaseModel):
 class TestSuite(BaseModel):
     model_config = {"extra": "forbid"}
 
-    application_name: str = Field(..., min_length=1)
+    application_slug: str = Field(..., min_length=1)
     application_version: str = Field(..., min_length=1)
     description: str = Field(default="")
     tests: list[TestCase] = Field(default_factory=list)
@@ -123,16 +123,16 @@ class TestSuite(BaseModel):
     @classmethod
     def from_yaml_dict(cls, data: dict, base_folder: Path) -> Self:
         """Create TestSuite from parsed YAML dictionary"""
-        application_name = data["application_name"]
+        application_slug = data["application_slug"]
         application_version = data["application_version"]
 
         tests = [
-            TestCase.from_yaml_dict(test_data, application_name, application_version, base_folder)
+            TestCase.from_yaml_dict(test_data, application_slug, application_version, base_folder)
             for test_data in data.get("test_cases", [])
         ]
 
         return cls(
-            application_name=application_name,
+            application_slug=application_slug,
             application_version=application_version,
             description=data.get("description", ""),
             tests=tests,

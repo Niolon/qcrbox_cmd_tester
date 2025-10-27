@@ -1,4 +1,4 @@
-application_name: "cod_check"
+application_slug: "cod_check"
 application_version: "0.0.1"
 test_cases:
   - name: "successful merge"

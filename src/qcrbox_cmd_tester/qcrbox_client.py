@@ -67,7 +67,7 @@ def upload_cif_as_dataset(client: Client, cif_text: str, file_name: str) -> tupl
 def run_qcrbox_command(
     client: Client,
     command_name: str,
-    application_name: str,
+    application_slug: str,
     application_version: str,
     command_parameters: list,
 ) -> CommandRunResult:
@@ -77,7 +77,7 @@ def run_qcrbox_command(
     Args:
         client: The QCrBox API client
         command_name: Name of the command to run
-        application_name: Name of the QCrBox application
+        application_slug: Slug of the QCrBox application
         application_version: Version of the application
         parameter_dict: Dictionary of command parameters
 
@@ -90,7 +90,7 @@ def run_qcrbox_command(
     response = invoke_command.sync(
         client=client,
         body=InvokeCommandParameters(
-            application_slug=application_name,
+            application_slug=application_slug,
             application_version=application_version,
             command_name=command_name,
             command_arguments=parameters,

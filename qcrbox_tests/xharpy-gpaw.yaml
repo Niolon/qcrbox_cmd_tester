@@ -1,6 +1,6 @@
 # Test suite for XHARPy-GPAW application
 
-application_name: xharpy-gpaw
+application_slug: xharpy-gpaw
 application_version: "0.2.0"
 description: "Test suite for XHARPy-GPAW - Calculation of custom atomic form factors from periodic calculations with GPAW"
 

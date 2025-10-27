@@ -50,7 +50,7 @@ def simple_test_case():
     return TestCase(
         name="test_simple",
         description="A simple test case",
-        qcrbox_application_name="test_app",
+        qcrbox_application_slug="test_app",
         qcrbox_application_version="1.0.0",
         qcrbox_command_name="process",
         qcrbox_command_parameters=[
@@ -69,7 +69,7 @@ def test_case_with_file():
     return TestCase(
         name="test_with_file",
         description="Test case with file input",
-        qcrbox_application_name="test_app",
+        qcrbox_application_slug="test_app",
         qcrbox_application_version="1.0.0",
         qcrbox_command_name="analyze",
         qcrbox_command_parameters=[
@@ -88,7 +88,7 @@ def test_case_with_file_custom_filename():
     return TestCase(
         name="test_with_custom_filename",
         description="Test case with custom upload filename",
-        qcrbox_application_name="test_app",
+        qcrbox_application_slug="test_app",
         qcrbox_application_version="1.0.0",
         qcrbox_command_name="process_file",
         qcrbox_command_parameters=[
@@ -105,7 +105,7 @@ def test_case_with_file_custom_filename():
 def test_suite_simple(simple_test_case):
     """Create a simple test suite with one test case."""
     return TestSuite(
-        application_name="test_app",
+        application_slug="test_app",
         application_version="1.0.0",
         description="A simple test suite",
         tests=[simple_test_case],
@@ -117,7 +117,7 @@ def test_suite_multiple():
     """Create a test suite with multiple test cases."""
     test_case_1 = TestCase(
         name="test_1",
-        qcrbox_application_name="test_app",
+        qcrbox_application_slug="test_app",
         qcrbox_application_version="1.0.0",
         qcrbox_command_name="cmd1",
         qcrbox_command_parameters=[],
@@ -128,7 +128,7 @@ def test_suite_multiple():
 
     test_case_2 = TestCase(
         name="test_2",
-        qcrbox_application_name="test_app",
+        qcrbox_application_slug="test_app",
         qcrbox_application_version="1.0.0",
         qcrbox_command_name="cmd2",
         qcrbox_command_parameters=[],
@@ -138,7 +138,7 @@ def test_suite_multiple():
     )
 
     return TestSuite(
-        application_name="test_app",
+        application_slug="test_app",
         application_version="1.0.0",
         description="Test suite with multiple cases",
         tests=[test_case_1, test_case_2],
@@ -218,7 +218,7 @@ def test_run_test_case_multiple_expectations(mock_run_command, mock_client, samp
     """Test running a test case with multiple expected results."""
     test_case = TestCase(
         name="multi_expect",
-        qcrbox_application_name="test_app",
+        qcrbox_application_slug="test_app",
         qcrbox_application_version="1.0.0",
         qcrbox_command_name="process",
         qcrbox_command_parameters=[],
@@ -246,7 +246,7 @@ def test_run_test_case_partial_failure(mock_run_command, mock_client, sample_cif
     """Test a test case where some expectations pass and some fail."""
     test_case = TestCase(
         name="partial_fail",
-        qcrbox_application_name="test_app",
+        qcrbox_application_slug="test_app",
         qcrbox_application_version="1.0.0",
         qcrbox_command_name="process",
         qcrbox_command_parameters=[],
@@ -303,7 +303,7 @@ def test_run_test_suite_single_case(mock_run_command, mock_client, test_suite_si
 
     # Verify the result
     assert isinstance(result, TestSuiteResult)
-    assert result.application_name == "test_app"
+    assert result.application_slug == "test_app"
     assert result.all_passed is True
     assert len(result.test_results) == 1
     assert all(isinstance(r, TestCaseResult) for r in result.test_results)
@@ -320,7 +320,7 @@ def test_run_test_suite_multiple_cases(mock_run_command, mock_client, test_suite
 
     # Verify the result
     assert isinstance(result, TestSuiteResult)
-    assert result.application_name == "test_app"
+    assert result.application_slug == "test_app"
     assert len(result.test_results) == 2
 
     # Verify each command was called
@@ -388,9 +388,9 @@ def test_test_suite_result_structure():
     """Test the TestSuiteResult dataclass structure."""
     test_results = [TestCaseResult(test_case_name="test1", all_passed=True, individual_results=[])]
 
-    result = TestSuiteResult(application_name="app", all_passed=True, test_results=test_results)
+    result = TestSuiteResult(application_slug="app", all_passed=True, test_results=test_results)
 
-    assert result.application_name == "app"
+    assert result.application_slug == "app"
     assert result.all_passed is True
     assert result.test_results == test_results
 

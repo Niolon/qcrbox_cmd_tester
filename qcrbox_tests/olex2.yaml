@@ -1,6 +1,6 @@
 # Test suite for Olex2 application
 
-application_name: olex2
+application_slug: olex2
 application_version: "1.5-alpha"
 description: "Test suite for Olex2 - solve, refine and finish small-molecule crystal structures"
 

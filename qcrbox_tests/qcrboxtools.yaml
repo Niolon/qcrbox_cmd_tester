@@ -1,6 +1,6 @@
 # Common test suite document for an application
 
-application_name: qcrboxtools
+application_slug: qcrboxtools
 application_version: "0.0.5"
 test_cases:
   - name: "iso2aniso epoxide"
