@@ -83,6 +83,25 @@ def test_case_with_file():
 
 
 @pytest.fixture
+def test_case_with_file_custom_filename():
+    """Create a test case with file parameters and custom upload_filename."""
+    return TestCase(
+        name="test_with_custom_filename",
+        description="Test case with custom upload filename",
+        qcrbox_application_name="test_app",
+        qcrbox_application_version="1.0.0",
+        qcrbox_command_name="process_file",
+        qcrbox_command_parameters=[
+            QCrBoxFileParameter(name="input_file", cif_content="test data\n", upload_filename="custom_name.inp"),
+            QCrBoxParameter(name="mode", value="test"),
+        ],
+        expected_results=[
+            CifEntryMatchExpectedResult(cif_entry_name="_result.status", expected_value="ok"),
+        ],
+    )
+
+
+@pytest.fixture
 def test_suite_simple(simple_test_case):
     """Create a simple test suite with one test case."""
     return TestSuite(
@@ -377,6 +396,38 @@ def test_test_suite_result_structure():
 
 
 # Edge cases
+
+
+@patch("qcrbox_cmd_tester.run_suite.run_qcrbox_command")
+def test_run_test_case_with_custom_upload_filename(
+    mock_run_command, mock_client, test_case_with_file_custom_filename, sample_cif_output
+):
+    """Test that test case with custom upload_filename runs correctly."""
+    # Mock the command to return success with CIF output
+    mock_run_command.return_value = CommandRunResult(
+        status="successful", result_cif="data_test\n_result.status ok\n", status_events=[]
+    )
+
+    result = run_test_case(mock_client, test_case_with_file_custom_filename)
+
+    # Verify the test case ran
+    assert isinstance(result, TestCaseResult)
+    assert result.test_case_name == "test_with_custom_filename"
+
+    # Verify run_qcrbox_command was called with correct parameters
+    mock_run_command.assert_called_once()
+    call_args = mock_run_command.call_args
+
+    # Check that the file parameter with custom upload_filename was passed
+    params = call_args[0][4]  # 5th argument is qcrbox_command_parameters
+    file_param = None
+    for param in params:
+        if isinstance(param, QCrBoxFileParameter):
+            file_param = param
+            break
+
+    assert file_param is not None
+    assert file_param.upload_filename == "custom_name.inp"
 
 
 @patch("qcrbox_cmd_tester.run_suite.run_qcrbox_command")

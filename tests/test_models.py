@@ -104,6 +104,101 @@ def test_file_parameter_from_external_file():
         temp_file.unlink()
 
 
+def test_file_parameter_upload_filename_default():
+    """Test that upload_filename defaults to None."""
+    content = "data_test\n"
+    param = QCrBoxFileParameter.from_internal_file(content, "test_param")
+
+    assert param.upload_filename is None
+
+
+def test_file_parameter_upload_filename_custom():
+    """Test setting custom upload_filename."""
+    content = "data_test\n"
+    param = QCrBoxFileParameter.from_internal_file(content, "test_param", upload_filename="custom.inp")
+
+    assert param.upload_filename == "custom.inp"
+
+
+def test_file_parameter_from_external_file_with_upload_filename():
+    """Test creating QCrBoxFileParameter from external file with custom upload_filename."""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".inp", delete=False) as f:
+        f.write("test input file\n")
+        temp_file = Path(f.name)
+
+    try:
+        param = QCrBoxFileParameter.from_external_file(
+            temp_file, "input_file", base_folder=Path("."), upload_filename="custom_name.inp"
+        )
+
+        assert param.name == "input_file"
+        assert param.upload_filename == "custom_name.inp"
+        assert "test input file" in param.cif_content
+    finally:
+        temp_file.unlink()
+
+
+def test_parameter_from_yaml_dict_external_file_with_upload_filename():
+    """Test creating an external file parameter from YAML dict with upload_filename."""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+        f.write("constraint file content\n")
+        temp_file = Path(f.name)
+
+    try:
+        data = {
+            "name": "constraint_file",
+            "value": str(temp_file),
+            "type": "external_file",
+            "upload_filename": "CONSTRAIN.txt",
+        }
+        param = QCrBoxParameter.from_yaml_dict(data, base_folder=Path("."))
+
+        assert isinstance(param, QCrBoxFileParameter)
+        assert param.name == "constraint_file"
+        assert param.upload_filename == "CONSTRAIN.txt"
+        assert "constraint file content" in param.cif_content
+    finally:
+        temp_file.unlink()
+
+
+def test_parameter_from_yaml_dict_internal_file_with_upload_filename():
+    """Test creating an internal file parameter from YAML dict with upload_filename."""
+    file_content = "internal file data\n"
+    data = {
+        "name": "data_file",
+        "value": file_content,
+        "type": "internal_file",
+        "upload_filename": "data.dat",
+    }
+    param = QCrBoxParameter.from_yaml_dict(data, base_folder=Path("."))
+
+    assert isinstance(param, QCrBoxFileParameter)
+    assert param.name == "data_file"
+    assert param.upload_filename == "data.dat"
+    assert param.cif_content == file_content
+
+
+def test_parameter_from_yaml_dict_external_file_without_upload_filename():
+    """Test that upload_filename is optional and defaults to None."""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".cif", delete=False) as f:
+        f.write("data_test\n")
+        temp_file = Path(f.name)
+
+    try:
+        data = {
+            "name": "input_cif",
+            "value": str(temp_file),
+            "type": "external_file",
+            # No upload_filename specified
+        }
+        param = QCrBoxParameter.from_yaml_dict(data, base_folder=Path("."))
+
+        assert isinstance(param, QCrBoxFileParameter)
+        assert param.upload_filename is None
+    finally:
+        temp_file.unlink()
+
+
 # Tests for TestCase validators
 
 

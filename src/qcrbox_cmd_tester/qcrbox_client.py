@@ -162,7 +162,9 @@ def prepare_qcrbox_parameters(client: Client, parameters: list) -> dict[str, obj
     dataset_ids = []
     for param in dataset_params:
         cif_text = param.cif_content
-        dataset_id, data_file_id = upload_cif_as_dataset(client, cif_text, f"{param.name}.cif")
+        # Use upload_filename if provided, otherwise default to "{param.name}.cif"
+        filename = param.upload_filename if param.upload_filename else f"{param.name}.cif"
+        dataset_id, data_file_id = upload_cif_as_dataset(client, cif_text, filename)
         data_file_ids[param.name] = data_file_id
         dataset_ids.append(dataset_id)
 

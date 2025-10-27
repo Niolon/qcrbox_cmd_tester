@@ -20,13 +20,19 @@ class QCrBoxParameter(BaseModel):
         """Create parameter from YAML dictionary"""
         param_type = data.get("type", "str")
         param_data = {"name": data["name"], "value": data["value"]}
+        upload_filename = data.get("upload_filename", None)
 
         if param_type == "external_file":
             return QCrBoxFileParameter.from_external_file(
-                file_path=data["value"], name=data["name"], base_folder=base_folder
+                file_path=data["value"],
+                name=data["name"],
+                base_folder=base_folder,
+                upload_filename=upload_filename,
             )
         elif param_type == "internal_file":
-            return QCrBoxFileParameter.from_internal_file(file_content=data["value"], name=data["name"])
+            return QCrBoxFileParameter.from_internal_file(
+                file_content=data["value"], name=data["name"], upload_filename=upload_filename
+            )
         else:
             return cls(**param_data)
 
@@ -34,18 +40,21 @@ class QCrBoxParameter(BaseModel):
 class QCrBoxFileParameter(BaseModel):
     name: str = Field(..., min_length=1)
     cif_content: str
+    upload_filename: str | None = Field(default=None, description="Filename to use when uploading to QCrBox")
 
     @classmethod
-    def from_internal_file(cls, file_content: str, name: str) -> Self:
-        return cls(name=name, cif_content=file_content)
+    def from_internal_file(cls, file_content: str, name: str, upload_filename: str | None = None) -> Self:
+        return cls(name=name, cif_content=file_content, upload_filename=upload_filename)
 
     @classmethod
-    def from_external_file(cls, file_path: str | Path, name: str, base_folder: Path) -> Self:
+    def from_external_file(
+        cls, file_path: str | Path, name: str, base_folder: Path, upload_filename: str | None = None
+    ) -> Self:
         file_path = Path(file_path)
         if not file_path.is_absolute():
             file_path = base_folder / file_path
         file_content = file_path.read_text()
-        return cls(name=name, cif_content=file_content)
+        return cls(name=name, cif_content=file_content, upload_filename=upload_filename)
 
 
 # union of all parameter types

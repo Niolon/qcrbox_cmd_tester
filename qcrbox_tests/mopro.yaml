@@ -3,6 +3,14 @@
 application_name: mopro
 application_version: "2024.10"
 
+# Note: For file parameters, you can optionally specify 'upload_filename' to control
+# the filename used when uploading to QCrBox. If not specified, defaults to "{parameter_name}.cif"
+# Example:
+#   - name: inp_file
+#     type: external_file
+#     value: "./path/to/file.inp"
+#     upload_filename: "custom_name.inp"  # Optional: specifies upload filename
+
 test_cases:
   - name: "run_inp_file_basic"
     description: "Test running MoPro with input files"
@@ -21,12 +29,15 @@ test_cases:
       - name: inp_file
         type: external_file
         value: "./test_cif_files/mopro_files/mopro.inp"
+        upload_filename: "mopro.inp"
       - name: constraint_file
         type: external_file
         value: "./test_cif_files/mopro_files/CONSTRAIN.txt"
+        upload_filename: "CONSTRAIN.txt"
       - name: restraint_file
         type: external_file
         value: "./test_cif_files/mopro_files/RESTRAIN.txt"
+        upload_filename: "RESTRAIN.txt"
       - name: table_type
         type: str
         value: "MoPro v24"
