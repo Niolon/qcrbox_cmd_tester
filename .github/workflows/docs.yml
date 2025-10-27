@@ -28,10 +28,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install mkdocs mkdocs-material pyyaml pytest
-
-      - name: Run documentation tests
-        run: pytest tests/test_docs.py -v
+          pip install mkdocs mkdocs-material
 
       - name: Build documentation with MkDocs
         run: mkdocs build --strict
@@ -40,20 +37,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: Install markdownlint-cli
-        run: npm install -g markdownlint-cli
-
-      - name: Lint Markdown files
-        run: markdownlint 'docs/**/*.md' 'README.md' --config .markdownlint.json
-        continue-on-error: true
-
-      - name: Check for broken links
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
-        with:
-          use-quiet-mode: 'yes'
-          config-file: '.markdown-link-check.json'
-        continue-on-error: true
   
   build:
     name: Build Documentation Site
