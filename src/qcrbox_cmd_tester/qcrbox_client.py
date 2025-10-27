@@ -58,8 +58,6 @@ def upload_cif_as_dataset(client: Client, cif_text: str, file_name: str) -> tupl
     if isinstance(response, QCrBoxErrorResponse) or response is None:
         raise TypeError("Failed to upload file", response)
 
-    print("Created dataset:", response)
-
     dataset_id = response.payload.datasets[0].qcrbox_dataset_id
     data_file_id = response.payload.datasets[0].data_files[file_name].qcrbox_file_id
 
@@ -86,7 +84,7 @@ def run_qcrbox_command(
     Returns:
         CommandRunResult with status and output
     """
-    parameter_dict, input_cif_ids = prepare_qcrbox_parameters(client, command_parameters)
+    parameter_dict, input_file_dataset_ids = prepare_qcrbox_parameters(client, command_parameters)
 
     parameters = InvokeCommandParametersCommandArguments.from_dict(parameter_dict)
     response = invoke_command.sync(
@@ -119,7 +117,7 @@ def run_qcrbox_command(
             final_response = None
         time.sleep(1)
 
-    for dataset_id in input_cif_ids:
+    for dataset_id in input_file_dataset_ids:
         delete_dataset_by_id.sync(id=dataset_id, client=client)
 
     if final_response.status == "successful":
@@ -161,10 +159,12 @@ def prepare_qcrbox_parameters(client: Client, parameters: list) -> dict[str, obj
 
     # Upload files and get their IDs
     data_file_ids = {}
+    dataset_ids = []
     for param in dataset_params:
         cif_text = param.cif_content
         dataset_id, data_file_id = upload_cif_as_dataset(client, cif_text, f"{param.name}.cif")
         data_file_ids[param.name] = data_file_id
+        dataset_ids.append(dataset_id)
 
     # Build parameter dictionary
     parameter_dict = {
@@ -172,4 +172,4 @@ def prepare_qcrbox_parameters(client: Client, parameters: list) -> dict[str, obj
         for param in parameters
     }
 
-    return parameter_dict, list(data_file_ids.values())
+    return parameter_dict, dataset_ids

@@ -1,0 +1,39 @@
+# Test suite for MoProSuite application
+
+application_name: mopro
+application_version: "2024.10"
+
+test_cases:
+  - name: "run_inp_file_basic"
+    description: "Test running MoPro with input files"
+    command_name: run_inp_file
+    
+    manual_precondition:
+      - MoProSuite container needs to be built and available
+    
+    input_parameters:
+      - name: input_cif
+        type: external_file
+        value: "./test_cif_files/ylid_iam_refined.cif"
+      - name: output_cif_name
+        type: str
+        value: "mopro_output.cif"
+      - name: inp_file
+        type: external_file
+        value: "./test_cif_files/mopro_files/mopro.inp"
+      - name: constraint_file
+        type: external_file
+        value: "./test_cif_files/mopro_files/CONSTRAIN.txt"
+      - name: restraint_file
+        type: external_file
+        value: "./test_cif_files/mopro_files/RESTRAIN.txt"
+      - name: table_type
+        type: str
+        value: "MoPro v24"
+      - name: wavefunction_type
+        type: str
+        value: "Su Coppens"
+    
+    expected_results:
+      - result_type: status
+        expected: successful

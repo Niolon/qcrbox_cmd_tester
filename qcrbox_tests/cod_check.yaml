@@ -1,0 +1,41 @@
+application_name: "cod_check"
+application_version: "0.0.1"
+test_cases:
+  - name: "successful merge"
+    description: "test the successful lookup and merge of a structure from COD"
+    command_name: "merge_closest_cod_entry"
+    
+    manual_precondition:
+      - cod_check container needs to be built and available
+      - internet connection is required for COD access
+
+    input_parameters:
+      - name: input_cif
+        type: external_file
+        value: "./test_cif_files/ylid_iam_refined.cif"
+      - name: output_cif_name
+        type: str
+        value: "merged_cod_entry.cif"
+      - name: cellpar_deviation_perc
+        type: float
+        value: 3.0
+      - name: listed_elements_only
+        type: bool
+        value: true
+
+    expected_results:
+      - result_type: status
+        expected: successful
+      - result_type: cif_value
+        test_type: match
+        cif_entry_name: _diffrn.ambient_temperature
+        expected_value: 110.0
+      - result_type: cif_loop_value
+        test_type: present
+        cif_entry_name: _atom_site.fract_x
+        row_lookup:
+          - row_entry_name: _atom_site.label
+            row_entry_value: 'S1'
+          
+
+        
