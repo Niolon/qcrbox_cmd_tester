@@ -18,9 +18,17 @@ from .run_suite import TestSuiteResult, run_test_suite
 
 def print_test_results(result: TestSuiteResult, debug_dir: Path | None = None) -> None:
     """Print test results in a readable format."""
+    # Calculate statistics
+    total_test_cases = len(result.test_results)
+    passed_test_cases = sum(1 for tr in result.test_results if tr.all_passed)
+    total_expected_results = sum(len(tr.individual_results) for tr in result.test_results)
+    passed_expected_results = sum(sum(1 for ir in tr.individual_results if ir.passed) for tr in result.test_results)
+
     print(f"\n{'=' * 80}")
     print(f"Test Suite: {result.application_name}")
     print(f"Status: {'✓ PASSED' if result.all_passed else '✗ FAILED'}")
+    print(f"Test Cases: {passed_test_cases}/{total_test_cases} passed")
+    print(f"Expected Results: {passed_expected_results}/{total_expected_results} passed")
     print(f"{'=' * 80}\n")
 
     for test_result in result.test_results:
@@ -175,9 +183,22 @@ def run_test_suites_from_directory(tests_dir: Path, qcrbox_url: str, debug: bool
     print(f"\n{'=' * 80}")
     print("SUMMARY")
     print(f"{'=' * 80}")
-    passed_count = sum(1 for r in results if r.all_passed)
-    total_count = len(results)
-    print(f"Test Suites: {passed_count}/{total_count} passed")
+
+    # Calculate totals
+    total_suites = len(results)
+    passed_suites = sum(1 for r in results if r.all_passed)
+
+    total_test_cases = sum(len(r.test_results) for r in results)
+    passed_test_cases = sum(sum(1 for tr in r.test_results if tr.all_passed) for r in results)
+
+    total_expected_results = sum(sum(len(tr.individual_results) for tr in r.test_results) for r in results)
+    passed_expected_results = sum(
+        sum(sum(1 for ir in tr.individual_results if ir.passed) for tr in r.test_results) for r in results
+    )
+
+    print(f"Test Suites: {passed_suites}/{total_suites} passed")
+    print(f"Test Cases: {passed_test_cases}/{total_test_cases} passed")
+    print(f"Expected Results: {passed_expected_results}/{total_expected_results} passed")
     print(f"Overall Status: {'✓ PASSED' if all_passed else '✗ FAILED'}")
     print(f"{'=' * 80}\n")
 
