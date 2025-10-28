@@ -85,7 +85,7 @@ test_cases:
         test_type: within
         cif_entry_name: "_refine_ls.wr_factor_ref"
         min_value: 0.0
-        max_value: 0.1
+        max_value: 0.06
       - result_type: cif_loop_value
         test_type: within
         row_lookup:
