@@ -10,8 +10,11 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+import yaml
+from pydantic import ValidationError
 from qcrboxapiclient.client import Client
 
+from .error_formatter import format_yaml_error
 from .models import TestSuite
 from .run_suite import TestSuiteResult, run_test_suite
 
@@ -169,8 +172,23 @@ def run_test_suites_from_path(tests_path: Path, qcrbox_url: str, debug: bool = F
 
     for yaml_file in sorted(yaml_files):
         print(f"\nLoading test suite from: {yaml_file.name}")
+
+        # Load YAML data first to have it available for error formatting
+        yaml_data = None
         try:
-            test_suite = TestSuite.from_yaml_file(yaml_file)
+            with open(yaml_file) as f:
+                yaml_data = yaml.safe_load(f)
+        except yaml.YAMLError as e:
+            format_yaml_error(e, yaml_file, yaml_data)
+            all_passed = False
+            continue
+        except (FileNotFoundError, PermissionError) as e:
+            format_yaml_error(e, yaml_file, yaml_data)
+            all_passed = False
+            continue
+
+        try:
+            test_suite = TestSuite.from_yaml_dict(yaml_data, base_folder=yaml_file.parent)
             print(f"  Application: {test_suite.application_slug} v{test_suite.application_version}")
             print(f"  Tests: {len(test_suite.tests)}")
 
@@ -181,8 +199,12 @@ def run_test_suites_from_path(tests_path: Path, qcrbox_url: str, debug: bool = F
             if not result.all_passed:
                 all_passed = False
 
+        except ValidationError as e:
+            format_yaml_error(e, yaml_file, yaml_data)
+            all_passed = False
+            continue
         except Exception as e:
-            print(f"  ✗ Error loading or running test suite: {e}", file=sys.stderr)
+            format_yaml_error(e, yaml_file, yaml_data)
             all_passed = False
             continue
 
