@@ -16,6 +16,10 @@ test_cases:
       - name: output_cif_name
         type: str
         value: "epoxide_anisotropic.cif"
+      - name: select_elements
+        type: str
+        value: "C,H,O"
+
 
     expected_results:
       - result_type: status
@@ -33,7 +37,7 @@ test_cases:
         row_lookup:
           - row_entry_name: "_atom_site.label"
             row_entry_value: "H2a"
-        expected_value: "Uiso"
+        expected_value: "Uani"
       - result_type: cif_loop_value
         test_type: within
         cif_entry_name: "_atom_site_aniso.u_11"
@@ -42,6 +46,15 @@ test_cases:
             row_entry_value: "O1"
         expected_value: 0.029
         allowed_deviation: 0.0001
+      - result_type: cif_loop_value
+        test_type: within
+        cif_entry_name: "_atom_site_aniso.u_22"
+        row_lookup:
+          - row_entry_name: "_atom_site_aniso.label"
+            row_entry_value: "H2a"
+        expected_value: 0.0336
+        allowed_deviation: 0.0001
+
 
   - name: "replace_structure_from_cif"
     description: "Test the replace_structure_from_cif command"
@@ -97,3 +110,4 @@ test_cases:
           - row_entry_name: "_atom_site.label"
             row_entry_value: "O123"
         expected_value: 0.250
+      
