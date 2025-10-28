@@ -1,6 +1,7 @@
 site_name: QCrBox Command Tester Documentation
 site_description: Documentation for QCrBox Command Tester
 site_author: Paul Niklas Ruth
+site_url: https://niolon.github.io/qcrbox_cmd_tester/
 repo_url: https://github.com/Niolon/qcrbox_cmd_tester
 repo_name: Niolon/qcrbox_cmd_tester
 
