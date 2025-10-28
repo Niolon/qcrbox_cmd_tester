@@ -16,7 +16,24 @@ This guide covers different ways to install QCrBox Command Tester depending on y
 
 Choose the installation method that best fits your workflow.
 
-### Option 1: Using pip
+### Option 1: Using uv
+
+Fast installation / dependency management using [uv](https://github.com/astral-sh/uv):
+
+```bash
+# Install uv if you haven't already
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install QCrBox Command Tester
+uv pip install git+https://github.com/Niolon/qcrbox_cmd_tester.git
+
+# Or for development
+git clone https://github.com/Niolon/qcrbox_cmd_tester.git
+cd qcrbox_cmd_tester
+uv pip install -e ".[dev]"
+```
+
+### Option 2: Using pip
 
 Standard installation using pip:
 
@@ -27,6 +44,7 @@ pip install git+https://github.com/Niolon/qcrbox_cmd_tester.git
 # Verify installation
 qcrbox-test --help
 ```
+
 
 #### Install with Development Dependencies
 
@@ -41,22 +59,7 @@ cd qcrbox_cmd_tester
 pip install -e ".[dev]"
 ```
 
-### Option 2: Using uv
 
-Fast alternative using [uv](https://github.com/astral-sh/uv):
-
-```bash
-# Install uv if you haven't already
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Install QCrBox Command Tester
-uv pip install git+https://github.com/Niolon/qcrbox_cmd_tester.git
-
-# Or for development
-git clone https://github.com/Niolon/qcrbox_cmd_tester.git
-cd qcrbox_cmd_tester
-uv pip install -e ".[dev]"
-```
 
 ### Option 3: Using pixi
 
@@ -78,28 +81,6 @@ pixi shell
 
 # Run tests
 pixi run test
-```
-
-### Option 4: From Source
-
-Manual installation for complete control:
-
-```bash
-# Clone the repository
-git clone https://github.com/Niolon/qcrbox_cmd_tester.git
-cd qcrbox_cmd_tester
-
-# Create a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt  # If available
-# Or install from pyproject.toml
-pip install -e .
-
-# Verify installation
-python -m qcrbox_cmd_tester --help
 ```
 
 ## Verifying Your Installation
@@ -133,17 +114,9 @@ qcrbox-test
 qcrbox-test --qcrbox-url http://localhost:11000
 ```
 
-### Remote Server
-
-For a remote QCrBox instance:
-
-```bash
-qcrbox-test --qcrbox-url https://qcrbox.example.com
-```
-
 ### Environment Variable
 
-Set a default QCrBox URL:
+Set a default QCrBox URL using the `QCRBOX_API_URL` environment variable:
 
 ```bash
 # Add to your ~/.bashrc or ~/.zshrc
@@ -151,6 +124,10 @@ export QCRBOX_API_URL="http://localhost:11000"
 
 # Then use without --qcrbox-url flag
 qcrbox-test
+
+# The environment variable is automatically detected
+# You can still override it with --qcrbox-url if needed
+qcrbox-test --qcrbox-url http://localhost:8000
 ```
 
 ## Installing Dependencies for Specific Features
@@ -178,51 +155,13 @@ pixi install --feature devtools
 ### For Documentation Building
 
 ```bash
-# Install MkDocs and theme
-pip install mkdocs mkdocs-material
-
-# Build documentation
-mkdocs build
-
-# Serve documentation locally
-mkdocs serve
+pixi run docs-build
 ```
 
-## Platform-Specific Notes
-
-### Linux
-
-Most Linux distributions work out of the box:
+for serving the documentation
 
 ```bash
-# Ubuntu/Debian - install Python if needed
-sudo apt update
-sudo apt install python3.11 python3.11-venv python3-pip
-
-# Then follow any installation method above
-```
-
-### macOS
-
-```bash
-# Install Python via Homebrew
-brew install python@3.11
-
-# Then follow any installation method above
-```
-
-### Windows
-
-```powershell
-# Install Python from python.org or Microsoft Store
-# Then in PowerShell:
-
-# Create virtual environment
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-
-# Install
-pip install git+https://github.com/Niolon/qcrbox_cmd_tester.git
+pixi run docs-serve
 ```
 
 ## Troubleshooting
@@ -260,30 +199,6 @@ docker ps | grep qcrbox
 ```
 
 See the [QCrBox documentation](https://qcrbox.github.io/QCrBox/) for setup help.
-
-## Updating
-
-### Update pip Installation
-
-```bash
-pip install --upgrade git+https://github.com/Niolon/qcrbox_cmd_tester.git
-```
-
-### Update Development Installation
-
-```bash
-cd qcrbox_cmd_tester
-git pull origin main
-pip install -e ".[dev]"
-```
-
-### Update pixi Installation
-
-```bash
-cd qcrbox_cmd_tester
-git pull origin main
-pixi install
-```
 
 ## Uninstalling
 

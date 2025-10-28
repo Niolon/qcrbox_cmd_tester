@@ -6,6 +6,7 @@ Usage:
 """
 
 import argparse
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -272,8 +273,8 @@ Examples:
     parser.add_argument(
         "--qcrbox-url",
         type=str,
-        default="http://localhost:11000",
-        help="URL of the QCrBox API (default: http://localhost:11000)",
+        default=os.environ.get("QCRBOX_API_URL", "http://localhost:11000"),
+        help="URL of the QCrBox API (default: $QCRBOX_API_URL or http://localhost:11000)",
     )
 
     parser.add_argument(

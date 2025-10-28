@@ -13,12 +13,10 @@ QCrBox Command Tester is a command-line tool that enables automated testing of c
 
 QCrBox Command Tester allows you to:
 
-- **Define test suites** using human-readable YAML files
-- **Execute QCrBox commands** programmatically via the QCrBox API
+- **Define test suites** for QCrBox using human-readable YAML files
 - **Validate CIF outputs** against expected values with multiple assertion types
 - **Run tests** for individual files or entire test suite directories
 - **Debug failures** with detailed logging and CIF file outputs
-- **Integrate with CI/CD** for continuous testing of crystallographic workflows
 
 ## Key Features
 
@@ -59,7 +57,7 @@ Test various aspects of command execution and CIF outputs:
 
 ### Flexible Execution Modes
 
-Run tests your way:
+Run tests in different ways:
 
 ```bash
 # Run all tests in a directory
@@ -111,7 +109,7 @@ test_cases:
 
 ### Integration Testing
 
-Validate complex workflows across multiple applications:
+Validate suites of multiple applications:
 
 ```bash
 # Run tests for all integrated tools
@@ -129,16 +127,6 @@ application_version: "0.0.6"  # New version
 test_cases:
   - name: "iso2aniso backward compatibility"
     # ... ensure same results as v0.0.5
-```
-
-### CI/CD Pipelines
-
-Integrate automated testing in your development workflow:
-
-```yaml
-# .github/workflows/test.yml
-- name: Run QCrBox tests
-  run: qcrbox-test --test-location tests/
 ```
 
 ## Architecture

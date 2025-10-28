@@ -67,7 +67,7 @@ qcrbox-test --test-location qcrbox_tests/olex2.yaml
 # Specify custom QCrBox API URL
 qcrbox-test --qcrbox-url http://localhost:8000
 
-# Enable debug mode to save logs for failing tests
+# Enable debug mode to save logs and output CIF files for failing tests
 qcrbox-test --debug
 ```
 

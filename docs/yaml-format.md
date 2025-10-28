@@ -47,12 +47,12 @@ test_cases:
 Each test case has the following structure:
 
 ```yaml
-name: string                      # Required: Unique name for this test
-description: string               # Optional: Description of what this test does
-command_name: string              # Required: QCrBox command to execute
-manual_precondition: []           # Optional: List of manual setup steps (for documentation)
-input_parameters: []              # Optional: List of input parameters for the command
-expected_results: []              # Required: List of expected results (at least one)
+- name: string                      # Required: Unique name for this test
+  description: string               # Optional: Description of what this test does
+  command_name: string              # Required: QCrBox command to execute
+  manual_precondition: []           # Optional: List of manual setup steps (for documentation)
+  input_parameters: []              # Optional: List of input parameters for the command
+  expected_results: []              # Required: List of expected results (at least one)
 ```
 
 ### Example
@@ -71,7 +71,7 @@ expected_results: []              # Required: List of expected results (at least
 
 ## Input Parameters
 
-Input parameters define the data passed to the QCrBox command. There are three types of parameters:
+Input parameters define the data passed to the QCrBox command. The names must be identical to the one of the QCrBox command. There are three types of parameters:
 
 ### 1. Simple Value Parameters
 
@@ -100,7 +100,7 @@ input_parameters:
 
 ### 2. External File Parameters
 
-For files stored in your repository:
+For files stored in in a location relative to your YAML file:
 
 ```yaml
 - name: parameter_name           # Required: Parameter name
@@ -297,13 +297,16 @@ This finds the row where `_atom_site.label` equals "O1".
 
 ```yaml
 row_lookup:
-  - row_entry_name: "_atom_site.label"
-    row_entry_value: "O1"
-  - row_entry_name: "_atom_site.type_symbol"
-    row_entry_value: "O"
+  - row_entry_name: "_refln.index_h"
+    row_entry_value: 1
+  - row_entry_name: "_refln.index_k"
+    row_entry_value: 3
+  - row_entry_name: "_refln.index_l"
+    row_entry_value: 5
+
 ```
 
-This finds the row where BOTH conditions are true.
+This finds the row where ALL THREE conditions are true.
 
 #### Match Test
 

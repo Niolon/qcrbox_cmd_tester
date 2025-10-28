@@ -33,6 +33,7 @@ theme:
 nav:
   - Home: index.md
   - Installation: installation.md
+  - Running the Tester: running.md
   - YAML Format: yaml-format.md
 
 markdown_extensions:
