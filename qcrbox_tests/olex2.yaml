@@ -15,7 +15,7 @@ test_cases:
     input_parameters:
       - name: input_cif
         type: external_file
-        value: "./test_cif_files/ylid_iam_refined.cif"
+        value: "./test_cif_files/epoxide_anisotropic.cif"
       - name: output_cif_name
         type: str
         value: "olex2_refined.cif"
@@ -40,7 +40,7 @@ test_cases:
     input_parameters:
       - name: input_cif
         type: external_file
-        value: "./test_cif_files/ylid_iam_refined.cif"
+        value: "./test_cif_files/epoxide_anisotropic.cif"
       - name: output_cif_name
         type: str
         value: "olex2_commands_output.cif"

@@ -15,7 +15,7 @@ test_cases:
     input_parameters:
       - name: input_cif
         type: external_file
-        value: "./test_cif_files/ylid_iam_refined.cif"
+        value: "./test_cif_files/epoxide_anisotropic.cif"
       - name: output_cif_name
         type: str
         value: "xharpy_form_factors.cif"
@@ -37,21 +37,21 @@ test_cases:
         test_type: present
         row_lookup:
           - row_entry_name: "_aspheric_ff.index_h"
-            row_entry_value: 7
-          - row_entry_name: "_aspheric_ff.index_k"
             row_entry_value: 1
+          - row_entry_name: "_aspheric_ff.index_k"
+            row_entry_value: 4
           - row_entry_name: "_aspheric_ff.index_l"
-            row_entry_value: 6
+            row_entry_value: 5
         cif_entry_name: "_aspheric_ff.form_factor_real"
       - result_type: cif_loop_value
         test_type: present
         row_lookup:
           - row_entry_name: "_aspheric_ff.index_h"
-            row_entry_value: 7
-          - row_entry_name: "_aspheric_ff.index_k"
             row_entry_value: 1
+          - row_entry_name: "_aspheric_ff.index_k"
+            row_entry_value: 4
           - row_entry_name: "_aspheric_ff.index_l"
-            row_entry_value: 6
+            row_entry_value: 5
         cif_entry_name: "_aspheric_ff.form_factor_imag"
 
 
@@ -67,7 +67,7 @@ test_cases:
     input_parameters:
       - name: input_cif
         type: external_file
-        value: "./test_cif_files/ylid_iam_refined.cif"
+        value: "./test_cif_files/epoxide_anisotropic.cif"
       - name: output_cif_name
         type: str
         value: "xharpy_refined.cif"
@@ -85,14 +85,14 @@ test_cases:
         test_type: within
         cif_entry_name: "_refine_ls.wr_factor_ref"
         min_value: 0.0
-        max_value: 0.018
+        max_value: 0.1
       - result_type: cif_loop_value
         test_type: within
         row_lookup:
           - row_entry_name: "_geom_bond.atom_site_label_1"
-            row_entry_value: "C6"
+            row_entry_value: "C2"
           - row_entry_name: "_geom_bond.atom_site_label_2"
-            row_entry_value: "H6"
+            row_entry_value: "H2a"
         cif_entry_name: "_geom_bond.distance"
         min_value: 1.0
         max_value: 1.2
